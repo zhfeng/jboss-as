@@ -1014,6 +1014,10 @@
         <module-def name="org.jboss.as.weld">
             <maven-resource group="org.jboss.as" artifact="jboss-as-weld"/>
         </module-def>
+        <module-def name="org.jboss.narayana.txframework">
+            <maven-resource group="org.jboss.narayana.txframework" artifact="txframework"/>
+        </module-def>
+
         <module-def name="org.jboss.as.xts">
             <maven-resource group="org.jboss.as" artifact="jboss-as-xts"/>
         </module-def>
