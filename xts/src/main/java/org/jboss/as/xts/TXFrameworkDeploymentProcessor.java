@@ -4,10 +4,14 @@ import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.DeploymentUnitProcessingException;
 import org.jboss.as.server.deployment.DeploymentUnitProcessor;
+import org.jboss.as.webservices.injection.WSEndpointHandlersMapping;
 import org.jboss.as.webservices.util.WSAttachmentKeys;
-import org.jboss.jandex.AnnotationInstance;
-import org.jboss.jandex.ClassInfo;
-import org.jboss.jandex.DotName;
+import org.jboss.as.xts.txframework.BridgeType;
+import org.jboss.as.xts.txframework.EndpointMetaData;
+import org.jboss.as.xts.txframework.Helper;
+import org.jboss.as.xts.txframework.TXFrameworkException;
+import org.jboss.as.xts.txframework.WSATAnnotation;
+import org.jboss.as.xts.txframework.WebServiceAnnotation;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainsMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerMetaData;
@@ -18,29 +22,44 @@ import org.jboss.wsf.spi.metadata.webservices.WebservicesMetaData;
 import javax.xml.namespace.QName;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
-import static org.jboss.as.webservices.util.ASHelper.getAnnotations;
+import java.util.Set;
 
 public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
+
+    private static final String TX_BRIDGE_HANDLER = "org.jboss.jbossts.txbridge.inbound.JaxWSTxInboundBridgeHandler";
+    private static final String TX_CONTEXT_HANDLER = "com.arjuna.mw.wst11.service.JaxWSHeaderContextProcessor";
 
     public void deploy(final DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {
 
         final DeploymentUnit unit = phaseContext.getDeploymentUnit();
-        final List<AnnotationInstance> webServiceRefAnnotations = getAnnotations(unit, DotName.createSimple("javax.jws.WebService"));
-        final List<String> wstxEndpoints = getWSTXEndpoints(unit);
 
         WebservicesMetaData webservicesMetaData = new WebservicesMetaData();
+
         boolean modified = false;
 
-        for (AnnotationInstance webserviceAnnotation : webServiceRefAnnotations) {
+        for (String endpoint : Helper.getDeploymentClasses(unit)) {
+            try {
 
-            final ClassInfo classInfo = (ClassInfo) webserviceAnnotation.target();
-            final String endpointClass = classInfo.name().toString();
+                EndpointMetaData endpointMetaData = EndpointMetaData.build(unit, endpoint);
 
-            if (wstxEndpoints.contains(endpointClass)) {
-                addHandlerToEndpoint(webservicesMetaData, webserviceAnnotation, endpointClass);
-                modified = true;
+                if (endpointMetaData.isTXFrameworkEnabled()) {
+                    List<String> handlers = new ArrayList<String>();
+
+                    WSATAnnotation wsatAnnotation = endpointMetaData.getWsatAnnotation();
+                    if (shouldBridge(wsatAnnotation)) {
+                        handlers.add(TX_BRIDGE_HANDLER);
+                    }
+                    handlers.add(TX_CONTEXT_HANDLER);
+
+                    addHandlerToEndpoint(webservicesMetaData, endpointMetaData.getWebServiceAnnotation(), endpoint, handlers);
+                    registerHandlersWithAS(unit, endpoint, handlers);
+                    modified = true;
+                }
+
+            } catch (TXFrameworkException e) {
+                throw new DeploymentUnitProcessingException("Error processing endpoint '" + endpoint + "'", e);
             }
         }
 
@@ -49,21 +68,26 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
         }
     }
 
-    private void addHandlerToEndpoint(WebservicesMetaData wsWebservicesMetaData, AnnotationInstance annotationInstance, String endpointClass) {
+    private boolean shouldBridge(WSATAnnotation wsatAnnotation) {
+        if (wsatAnnotation == null) {
+            return false;
+        }
+        if (wsatAnnotation.getBridgeType() == null) {
+            return false;
+        }
+        BridgeType bridgeType = wsatAnnotation.getBridgeType();
+        return (bridgeType.equals(BridgeType.JTA) || bridgeType.equals(BridgeType.DEFAULT));
+    }
+
+    private void addHandlerToEndpoint(WebservicesMetaData wsWebservicesMetaData, WebServiceAnnotation webServiceAnnotation, String endpointClass, List<String> handlers) {
 
         WebserviceDescriptionMetaData descriptionMetaData = new WebserviceDescriptionMetaData(wsWebservicesMetaData);
 
-        final UnifiedHandlerChainsMetaData unifiedHandlerChainsMetaData = buildHandlerChains("com.arjuna.mw.wst11.service.JaxWSHeaderContextProcessor");
-        final QName portQname = getPortQname(annotationInstance);
+        final UnifiedHandlerChainsMetaData unifiedHandlerChainsMetaData = buildHandlerChains(handlers);
+        final QName portQname = webServiceAnnotation.buildPortQName();
         final PortComponentMetaData portComponent = buildPortComponent(endpointClass, portQname, unifiedHandlerChainsMetaData, descriptionMetaData);
         descriptionMetaData.addPortComponent(portComponent);
         wsWebservicesMetaData.addWebserviceDescription(descriptionMetaData);
-    }
-
-    private QName getPortQname(AnnotationInstance annotationInstance) {
-        final String portName = annotationInstance.value("portName").asString();
-        final String targetNamespace = annotationInstance.value("targetNamespace").toString();
-        return new QName(targetNamespace, portName);
     }
 
     private PortComponentMetaData buildPortComponent(String endpointClass, QName portQname, UnifiedHandlerChainsMetaData unifiedHandlerChainsMetaData, WebserviceDescriptionMetaData descriptionMetaData) {
@@ -76,7 +100,7 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
         return portComponent;
     }
 
-    private UnifiedHandlerChainsMetaData buildHandlerChains(String... handlerClasses) {
+    private UnifiedHandlerChainsMetaData buildHandlerChains(List<String> handlerClasses) {
 
         UnifiedHandlerChainMetaData unifiedHandlerChainMetaData = new UnifiedHandlerChainMetaData();
 
@@ -92,45 +116,29 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
         return unifiedHandlerChainsMetaData;
     }
 
-    private void registerHandlersWithAS() {
-        // WSEndpointHandlersMapping mapping =
-        // unit.getAttachment(WS_ENDPOINT_HANDLERS_MAPPING_KEY);
-        // Set<String> handlers = mapping.getHandlers(endpointClass);
+    private void registerHandlersWithAS(DeploymentUnit unit, String endpointClass, List<String> handlersToAdd) {
 
-        // WSEndpointHandlersMapping mapping = new
-        // WSEndpointHandlersMapping();
-        // Set<String> handlers = new HashSet<String>();
-
-        // handlers.add(TXFrameworkHandler.class.getName());
-        // mapping.registerEndpointHandlers(endpointClass, handlers);
-
-        // unit.putAttachment(WS_ENDPOINT_HANDLERS_MA
-        // PPING_KEY, mapping);
-    }
-
-    private List<String> getWSTXEndpoints(DeploymentUnit unit) {
-
-        List<String> wsat = endpointsWithAnnotation(unit, "org.jboss.narayana.txframework.api.annotation.transaction.WSAT");
-        List<String> wsba = endpointsWithAnnotation(unit, "org.jboss.narayana.txframework.api.annotation.transaction.WSBA");
-
-        List<String> result = new ArrayList<String>();
-        result.addAll(wsat);
-        result.addAll(wsba);
-
-        return result;
-    }
-
-    private List<String> endpointsWithAnnotation(DeploymentUnit unit, String className) {
-
-        final List<AnnotationInstance> annotations = getAnnotations(unit, DotName.createSimple(className));
-
-        final List<String> endpoints = new ArrayList<String>();
-        for (AnnotationInstance annotationInstance : annotations) {
-            final ClassInfo classInfo = (ClassInfo) annotationInstance.target();
-            final String endpointClass = classInfo.name().toString();
-            endpoints.add(endpointClass);
+        WSEndpointHandlersMapping mapping = unit.getAttachment(WSAttachmentKeys.WS_ENDPOINT_HANDLERS_MAPPING_KEY);
+        if (mapping == null) {
+            mapping = new WSEndpointHandlersMapping();
+            unit.putAttachment(WSAttachmentKeys.WS_ENDPOINT_HANDLERS_MAPPING_KEY, mapping);
         }
-        return endpoints;
+
+        Set<String> existingHandlers = mapping.getHandlers(endpointClass);
+        if (existingHandlers == null) {
+            existingHandlers = new HashSet<String>();
+        } else {
+            //Existing collection is an unmodifiableSet
+            existingHandlers = new HashSet<String>(existingHandlers);
+        }
+
+        for (String handler : handlersToAdd) {
+            if (existingHandlers.contains(handler)) {
+                return;
+            }
+            existingHandlers.add(handler);
+        }
+        mapping.registerEndpointHandlers(endpointClass, existingHandlers);
     }
 
     public void undeploy(final DeploymentUnit unit) {
