@@ -9,6 +9,7 @@ import org.jboss.as.webservices.util.WSAttachmentKeys;
 import org.jboss.as.xts.txframework.BridgeType;
 import org.jboss.as.xts.txframework.EndpointMetaData;
 import org.jboss.as.xts.txframework.Helper;
+import org.jboss.as.xts.txframework.TXFrameworkDeploymentMarker;
 import org.jboss.as.xts.txframework.TXFrameworkException;
 import org.jboss.as.xts.txframework.WSATAnnotation;
 import org.jboss.as.xts.txframework.WebServiceAnnotation;
@@ -45,6 +46,8 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
                 EndpointMetaData endpointMetaData = EndpointMetaData.build(unit, endpoint);
 
                 if (endpointMetaData.isTXFrameworkEnabled()) {
+                    TXFrameworkDeploymentMarker.mark(unit);
+
                     List<String> handlers = new ArrayList<String>();
 
                     WSATAnnotation wsatAnnotation = endpointMetaData.getWsatAnnotation();
