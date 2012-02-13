@@ -33,6 +33,13 @@
 
     <dependencies>
         <module name="org.jboss.jandex"/>
+        <module name="org.jboss.narayana.txframework"/>
+        <module name="org.jboss.weld.spi" />
+        <module name="org.jboss.weld.api" />
+        <module name="org.jboss.weld.core" />
+        <module name="org.jboss.as.weld"/>	
+        <module name="org.jboss.modules"/>
+        <module name="javax.enterprise.api"/>
         <module name="javax.api"/>
         <module name="org.jboss.as.ee"/>
         <module name="org.jboss.msc"/>
