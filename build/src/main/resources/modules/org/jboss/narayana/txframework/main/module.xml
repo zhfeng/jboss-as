@@ -25,6 +25,7 @@
 <module xmlns="urn:jboss:module:1.1" name="org.jboss.narayana.txframework">
 
     <resources>
+        <resource-root path="txframework-5.0.0.M2-SNAPSHOT.jar"/>
         <!-- Insert resources here -->
     </resources>
 
@@ -34,8 +35,7 @@
         <module name="org.jboss.weld.core" />
         <module name="org.jboss.as.weld"/>
 	<module name="javax.enterprise.api"/>
-	<module name="org.jboss.xts"/>
-        <module name="org.jboss.jts"/>
-        <module name="javax.transaction.api"/>
+	<module name="org.jboss.xts" export="true"/>
+        <module name="javax.transaction.api" export="true" />
     </dependencies>
 </module>
