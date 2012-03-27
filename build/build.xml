@@ -1037,11 +1037,11 @@
         </module-def>
 
         <module-def name="org.jboss.jts">
-            <maven-resource group="org.jboss.jbossts" artifact="jbossjts"/>
+            <maven-resource group="org.jboss.narayana.jts" artifact="narayana-jts"/>
         </module-def>
 
         <module-def name="org.jboss.jts.integration">
-            <maven-resource group="org.jboss.jbossts" artifact="jbossjts-integration"/>
+            <maven-resource group="org.jboss.narayana.jts" artifact="narayana-jts-integration"/>
         </module-def>
 
         <module-def name="org.jboss.metadata">
@@ -1228,9 +1228,9 @@
         </module-def>
 
         <module-def name="org.jboss.xts">
-            <maven-resource group="org.jboss.jbossts" artifact="jbossxts"/>
-            <maven-resource group="org.jboss.jbossts" artifact="jbossxts-api"/>
-            <maven-resource group="org.jboss.jbossts" artifact="jbosstxbridge"/>
+            <maven-resource group="org.jboss.narayana.xts" artifact="jbossxts"/>
+            <!--maven-resource group="org.jboss.narayana.xts" artifact="jbossxts" classifier="api"/-->
+            <maven-resource group="org.jboss.narayana" artifact="jbosstxbridge"/>
         </module-def>
 
         <module-def name="org.jgroups">

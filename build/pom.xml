@@ -1188,28 +1188,29 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>org.jboss.jbossts</groupId>
-                    <artifactId>jbossjts</artifactId>
+                    <groupId>org.jboss.narayana.jts</groupId>
+                    <artifactId>narayana-jts</artifactId>
                 </dependency>
 
                 <dependency>
-                    <groupId>org.jboss.jbossts</groupId>
-                    <artifactId>jbossjts-integration</artifactId>
+                    <groupId>org.jboss.narayana.jts</groupId>
+                    <artifactId>narayana-jts-integration</artifactId>
                 </dependency>
 
                 <dependency>
-                    <groupId>org.jboss.jbossts</groupId>
+                    <groupId>org.jboss.narayana</groupId>
                     <artifactId>jbosstxbridge</artifactId>
                 </dependency>
 
                 <dependency>
-                    <groupId>org.jboss.jbossts</groupId>
+                    <groupId>org.jboss.narayana.xts</groupId>
                     <artifactId>jbossxts</artifactId>
                 </dependency>
 
                 <dependency>
-                    <groupId>org.jboss.jbossts</groupId>
-                    <artifactId>jbossxts-api</artifactId>
+                    <groupId>org.jboss.narayana.xts</groupId>
+                    <artifactId>jbossxts</artifactId>
+                    <classifier>api</classifier>
                 </dependency>
 
                 <dependency>

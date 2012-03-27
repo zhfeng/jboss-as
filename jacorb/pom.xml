@@ -102,8 +102,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.jbossts</groupId>
-            <artifactId>jbossjts</artifactId>
+            <groupId>org.jboss.narayana.jts</groupId>
+            <artifactId>narayana-jts</artifactId>
         </dependency>
 
         <dependency>
