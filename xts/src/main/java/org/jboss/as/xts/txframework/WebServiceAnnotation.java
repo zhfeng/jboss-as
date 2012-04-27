@@ -30,6 +30,10 @@ public class WebServiceAnnotation {
     public static WebServiceAnnotation build(DeploymentUnit unit, String endpoint) throws TXFrameworkException {
         AnnotationInstance annotationInstance = Helper.getAnnotation(unit, endpoint, WEBSERVICE_ANNOTATION);
 
+        if (annotationInstance == null) {
+            return null;
+        }
+
         final String portName = Helper.getStringVaue(annotationInstance, "portName");
         final String serviceName = Helper.getStringVaue(annotationInstance, "serviceName");
         final String name = Helper.getStringVaue(annotationInstance, "name");
