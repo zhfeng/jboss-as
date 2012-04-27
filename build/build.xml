@@ -987,6 +987,7 @@
         </module-def>
         <module-def name="org.jboss.narayana.txframework">
             <maven-resource group="org.jboss.narayana.txframework" artifact="txframework"/>
+            <maven-resource group="org.jboss.narayana.rts" artifact="rest-tx-api"/>
         </module-def>
 
         <module-def name="org.jboss.as.xts">

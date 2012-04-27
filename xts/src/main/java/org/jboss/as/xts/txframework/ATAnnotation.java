@@ -6,13 +6,13 @@ import org.jboss.jandex.AnnotationInstance;
 /**
  * @author paul.robinson@redhat.com, 2012-02-06
  */
-public class WSATAnnotation {
+public class ATAnnotation {
 
-    private static final String WSAT_ANNOTATION = "org.jboss.narayana.txframework.api.annotation.transaction.WSAT";
+    private static final String AT_ANNOTATION = "org.jboss.narayana.txframework.api.annotation.transaction.AT";
 
     private BridgeType bridgeType;
 
-    private WSATAnnotation(BridgeType bridgeType) {
+    private ATAnnotation(BridgeType bridgeType) {
         this.bridgeType = bridgeType;
     }
 
@@ -20,14 +20,14 @@ public class WSATAnnotation {
         return bridgeType;
     }
 
-    public static WSATAnnotation build(DeploymentUnit unit, String endpoint) throws TXFrameworkException {
+    public static ATAnnotation build(DeploymentUnit unit, String endpoint) throws TXFrameworkException {
 
-        final AnnotationInstance annotationInstance = Helper.getAnnotation(unit, endpoint, WSAT_ANNOTATION);
+        final AnnotationInstance annotationInstance = Helper.getAnnotation(unit, endpoint, AT_ANNOTATION);
         if (annotationInstance == null) {
             return null;
         }
 
         BridgeType bridgeType = BridgeType.build(annotationInstance);
-        return new WSATAnnotation(bridgeType);
+        return new ATAnnotation(bridgeType);
     }
 }

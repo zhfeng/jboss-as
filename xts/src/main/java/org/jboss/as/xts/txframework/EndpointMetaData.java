@@ -7,34 +7,41 @@ import org.jboss.as.server.deployment.DeploymentUnit;
  */
 public class EndpointMetaData {
 
-    private WSATAnnotation wsatAnnotation;
-    private WSBAAnnotation wsbaAnnotation;
+    private RESTATAnnotation restatAnnotation;
+    private ATAnnotation atAnnotation;
+    private BAAnnotation baAnnotation;
     private WebServiceAnnotation webServiceAnnotation;
 
     private boolean isTXFrameworkEnabled;
 
-    private EndpointMetaData(WSATAnnotation wsatAnnotation, WSBAAnnotation wsbaAnnotation, WebServiceAnnotation webServiceAnnotation, boolean isTXFrameworkEnabled) {
-        this.wsatAnnotation = wsatAnnotation;
-        this.wsbaAnnotation = wsbaAnnotation;
+    private EndpointMetaData(RESTATAnnotation restatAnnotation, ATAnnotation atAnnotation, BAAnnotation baAnnotation, WebServiceAnnotation webServiceAnnotation, boolean isTXFrameworkEnabled) {
+        this.restatAnnotation = restatAnnotation;
+        this.atAnnotation = atAnnotation;
+        this.baAnnotation = baAnnotation;
         this.webServiceAnnotation = webServiceAnnotation;
         this.isTXFrameworkEnabled = isTXFrameworkEnabled;
     }
 
     public static EndpointMetaData build(DeploymentUnit unit, String endpoint) throws TXFrameworkException {
-        final WSATAnnotation wsatAnnotation = WSATAnnotation.build(unit, endpoint);
-        final WSBAAnnotation wsbaAnnotation = WSBAAnnotation.build(unit, endpoint);
+        final RESTATAnnotation restatAnnotation = RESTATAnnotation.build(unit, endpoint);
+        final ATAnnotation atAnnotation = ATAnnotation.build(unit, endpoint);
+        final BAAnnotation baAnnotation = BAAnnotation.build(unit, endpoint);
         final WebServiceAnnotation webServiceAnnotation = WebServiceAnnotation.build(unit, endpoint);
-        final boolean isTXFrameworkEnabled = (wsatAnnotation != null || wsbaAnnotation != null);
+        final boolean isTXFrameworkEnabled = (atAnnotation != null || baAnnotation != null || restatAnnotation != null);
 
-        return new EndpointMetaData(wsatAnnotation, wsbaAnnotation, webServiceAnnotation, isTXFrameworkEnabled);
+        return new EndpointMetaData(restatAnnotation, atAnnotation, baAnnotation, webServiceAnnotation, isTXFrameworkEnabled);
     }
 
-    public WSATAnnotation getWsatAnnotation() {
-        return wsatAnnotation;
+    public ATAnnotation getAtAnnotation() {
+        return atAnnotation;
     }
 
-    public WSBAAnnotation getWsbaAnnotation() {
-        return wsbaAnnotation;
+    public BAAnnotation getBaAnnotation() {
+        return baAnnotation;
+    }
+
+    public RESTATAnnotation getRestatAnnotation() {
+        return restatAnnotation;
     }
 
     public WebServiceAnnotation getWebServiceAnnotation() {
@@ -43,5 +50,9 @@ public class EndpointMetaData {
 
     public boolean isTXFrameworkEnabled() {
         return isTXFrameworkEnabled;
+    }
+
+    public boolean isWebservice() {
+        return webServiceAnnotation != null;
     }
 }
