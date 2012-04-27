@@ -1254,6 +1254,11 @@
                 </dependency>
 
                 <dependency>
+                    <groupId>org.jboss.narayana.rts</groupId>
+                    <artifactId>rest-tx-api</artifactId>
+                </dependency>
+
+                <dependency>
                     <groupId>org.jboss.metadata</groupId>
                     <artifactId>jboss-metadata-appclient</artifactId>
                 </dependency>
