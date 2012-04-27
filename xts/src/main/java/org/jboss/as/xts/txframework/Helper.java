@@ -1,6 +1,7 @@
 package org.jboss.as.xts.txframework;
 
 import org.jboss.as.server.deployment.DeploymentUnit;
+import org.jboss.as.webservices.util.ASHelper;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassInfo;
@@ -10,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.jboss.as.webservices.util.ASHelper.getAnnotations;
 
 /**
  * @author paul.robinson@redhat.com, 2012-02-06
@@ -19,7 +19,7 @@ public class Helper {
 
     public static AnnotationInstance getAnnotation(DeploymentUnit unit, String endpoint, String annotationClassName) {
 
-        final List<AnnotationInstance> annotations = getAnnotations(unit, DotName.createSimple(annotationClassName));
+        final List<AnnotationInstance> annotations = ASHelper.getAnnotations(unit, DotName.createSimple(annotationClassName));
         for (AnnotationInstance annotationInstance : annotations) {
             final ClassInfo classInfo = (ClassInfo) annotationInstance.target();
             final String endpointClass = classInfo.name().toString();
@@ -32,18 +32,22 @@ public class Helper {
         return null;
     }
 
-    //todo: find a way to return all deployment classes.
     public static Set<String> getDeploymentClasses(DeploymentUnit unit) {
 
-        final List<AnnotationInstance> annotations = getAnnotations(unit, DotName.createSimple("javax.jws.WebService"));
         final Set<String> endpoints = new HashSet<String>();
+        addEndpointsToList(endpoints, ASHelper.getAnnotations(unit, DotName.createSimple("org.jboss.narayana.txframework.api.annotation.transaction.BA")));
+        addEndpointsToList(endpoints, ASHelper.getAnnotations(unit, DotName.createSimple("org.jboss.narayana.txframework.api.annotation.transaction.AT")));
+        return endpoints;
+    }
+
+    private static void addEndpointsToList(Set<String> endpoints, List<AnnotationInstance> annotations) {
         for (AnnotationInstance annotationInstance : annotations) {
             final ClassInfo classInfo = (ClassInfo) annotationInstance.target();
             final String endpointClass = classInfo.name().toString();
             endpoints.add(endpointClass);
         }
-        return endpoints;
     }
+
 
     public static String getStringVaue(AnnotationInstance annotationInstance, String key) {
         AnnotationValue value = annotationInstance.value(key);

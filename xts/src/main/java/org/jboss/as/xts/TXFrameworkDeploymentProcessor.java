@@ -11,7 +11,7 @@ import org.jboss.as.xts.txframework.EndpointMetaData;
 import org.jboss.as.xts.txframework.Helper;
 import org.jboss.as.xts.txframework.TXFrameworkDeploymentMarker;
 import org.jboss.as.xts.txframework.TXFrameworkException;
-import org.jboss.as.xts.txframework.WSATAnnotation;
+import org.jboss.as.xts.txframework.ATAnnotation;
 import org.jboss.as.xts.txframework.WebServiceAnnotation;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainsMetaData;
@@ -37,9 +37,14 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
 
         final DeploymentUnit unit = phaseContext.getDeploymentUnit();
 
+        //todo: this should only mark TXFramework enabled endpoints. Need to be able to be able to get all endpoints first before we can inspect them
+/*        if (!unit.getName().equals("arquillian-service") && !unit.getName().equals("rest-tx-web-5.0.0.M2-SNAPSHOT.war")) {
+            TXFrameworkDeploymentMarker.mark(unit);
+        }*/
+
         WebservicesMetaData webservicesMetaData = new WebservicesMetaData();
 
-        boolean modified = false;
+        boolean modifiedWSMeta = false;
 
         for (String endpoint : Helper.getDeploymentClasses(unit)) {
             try {
@@ -47,20 +52,24 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
                 EndpointMetaData endpointMetaData = EndpointMetaData.build(unit, endpoint);
 
                 if (endpointMetaData.isTXFrameworkEnabled()) {
+
                     TXFrameworkDeploymentMarker.mark(unit);
 
-                    List<String> handlers = new ArrayList<String>();
+                    if (endpointMetaData.isWebservice()) {
 
-                    handlers.add(SERVICE_REQUEST_HANDLER);
-                    WSATAnnotation wsatAnnotation = endpointMetaData.getWsatAnnotation();
-                    if (shouldBridge(wsatAnnotation)) {
-                        handlers.add(TX_BRIDGE_HANDLER);
+                        List<String> handlers = new ArrayList<String>();
+                        handlers.add(SERVICE_REQUEST_HANDLER);
+                        ATAnnotation ATAnnotation = endpointMetaData.getAtAnnotation();
+                        if (shouldBridge(ATAnnotation)) {
+                            handlers.add(TX_BRIDGE_HANDLER);
+                        }
+                        handlers.add(TX_CONTEXT_HANDLER);
+
+                        addHandlerToEndpoint(webservicesMetaData, endpointMetaData.getWebServiceAnnotation(), endpoint, handlers);
+                        registerHandlersWithAS(unit, endpoint, handlers);
+                        modifiedWSMeta = true;
                     }
-                    handlers.add(TX_CONTEXT_HANDLER);
 
-                    addHandlerToEndpoint(webservicesMetaData, endpointMetaData.getWebServiceAnnotation(), endpoint, handlers);
-                    registerHandlersWithAS(unit, endpoint, handlers);
-                    modified = true;
                 }
 
             } catch (TXFrameworkException e) {
@@ -68,19 +77,19 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
             }
         }
 
-        if (modified) {
+        if (modifiedWSMeta) {
             unit.putAttachment(WSAttachmentKeys.WEBSERVICES_METADATA_KEY, webservicesMetaData);
         }
     }
 
-    private boolean shouldBridge(WSATAnnotation wsatAnnotation) {
-        if (wsatAnnotation == null) {
+    private boolean shouldBridge(ATAnnotation ATAnnotation) {
+        if (ATAnnotation == null) {
             return false;
         }
-        if (wsatAnnotation.getBridgeType() == null) {
+        if (ATAnnotation.getBridgeType() == null) {
             return false;
         }
-        BridgeType bridgeType = wsatAnnotation.getBridgeType();
+        BridgeType bridgeType = ATAnnotation.getBridgeType();
         return (bridgeType.equals(BridgeType.JTA) || bridgeType.equals(BridgeType.DEFAULT));
     }
 
