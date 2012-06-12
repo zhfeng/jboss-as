@@ -11,7 +11,7 @@ import org.jboss.as.xts.txframework.EndpointMetaData;
 import org.jboss.as.xts.txframework.Helper;
 import org.jboss.as.xts.txframework.TXFrameworkDeploymentMarker;
 import org.jboss.as.xts.txframework.TXFrameworkException;
-import org.jboss.as.xts.txframework.ATAnnotation;
+import org.jboss.as.xts.txframework.TransactionalAnnotation;
 import org.jboss.as.xts.txframework.WebServiceAnnotation;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainsMetaData;
@@ -37,11 +37,6 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
 
         final DeploymentUnit unit = phaseContext.getDeploymentUnit();
 
-        //todo: this should only mark TXFramework enabled endpoints. Need to be able to be able to get all endpoints first before we can inspect them
-/*        if (!unit.getName().equals("arquillian-service") && !unit.getName().equals("rest-tx-web-5.0.0.M2-SNAPSHOT.war")) {
-            TXFrameworkDeploymentMarker.mark(unit);
-        }*/
-
         WebservicesMetaData webservicesMetaData = new WebservicesMetaData();
 
         boolean modifiedWSMeta = false;
@@ -59,8 +54,8 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
 
                         List<String> handlers = new ArrayList<String>();
                         handlers.add(SERVICE_REQUEST_HANDLER);
-                        ATAnnotation ATAnnotation = endpointMetaData.getAtAnnotation();
-                        if (shouldBridge(ATAnnotation)) {
+                        TransactionalAnnotation TransactionalAnnotation = endpointMetaData.getTransactionalAnnotation();
+                        if (shouldBridge(TransactionalAnnotation)) {
                             handlers.add(TX_BRIDGE_HANDLER);
                         }
                         handlers.add(TX_CONTEXT_HANDLER);
@@ -82,14 +77,14 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
         }
     }
 
-    private boolean shouldBridge(ATAnnotation ATAnnotation) {
-        if (ATAnnotation == null) {
+    private boolean shouldBridge(TransactionalAnnotation TransactionalAnnotation) {
+        if (TransactionalAnnotation == null) {
             return false;
         }
-        if (ATAnnotation.getBridgeType() == null) {
+        if (TransactionalAnnotation.getBridgeType() == null) {
             return false;
         }
-        BridgeType bridgeType = ATAnnotation.getBridgeType();
+        BridgeType bridgeType = TransactionalAnnotation.getBridgeType();
         return (bridgeType.equals(BridgeType.JTA) || bridgeType.equals(BridgeType.DEFAULT));
     }
 
