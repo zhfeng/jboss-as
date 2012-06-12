@@ -8,36 +8,36 @@ import org.jboss.as.server.deployment.DeploymentUnit;
 public class EndpointMetaData {
 
     private RESTATAnnotation restatAnnotation;
-    private ATAnnotation atAnnotation;
-    private BAAnnotation baAnnotation;
+    private TransactionalAnnotation transactionalAnnotation;
+    private CompensatableAnnotation compensatableAnnotation;
     private WebServiceAnnotation webServiceAnnotation;
 
     private boolean isTXFrameworkEnabled;
 
-    private EndpointMetaData(RESTATAnnotation restatAnnotation, ATAnnotation atAnnotation, BAAnnotation baAnnotation, WebServiceAnnotation webServiceAnnotation, boolean isTXFrameworkEnabled) {
+    private EndpointMetaData(RESTATAnnotation restatAnnotation, TransactionalAnnotation transactionalAnnotation, CompensatableAnnotation compensatableAnnotation, WebServiceAnnotation webServiceAnnotation, boolean isTXFrameworkEnabled) {
         this.restatAnnotation = restatAnnotation;
-        this.atAnnotation = atAnnotation;
-        this.baAnnotation = baAnnotation;
+        this.transactionalAnnotation = transactionalAnnotation;
+        this.compensatableAnnotation = compensatableAnnotation;
         this.webServiceAnnotation = webServiceAnnotation;
         this.isTXFrameworkEnabled = isTXFrameworkEnabled;
     }
 
     public static EndpointMetaData build(DeploymentUnit unit, String endpoint) throws TXFrameworkException {
         final RESTATAnnotation restatAnnotation = RESTATAnnotation.build(unit, endpoint);
-        final ATAnnotation atAnnotation = ATAnnotation.build(unit, endpoint);
-        final BAAnnotation baAnnotation = BAAnnotation.build(unit, endpoint);
+        final TransactionalAnnotation transactionalAnnotation = TransactionalAnnotation.build(unit, endpoint);
+        final CompensatableAnnotation compensatableAnnotation = CompensatableAnnotation.build(unit, endpoint);
         final WebServiceAnnotation webServiceAnnotation = WebServiceAnnotation.build(unit, endpoint);
-        final boolean isTXFrameworkEnabled = (atAnnotation != null || baAnnotation != null || restatAnnotation != null);
+        final boolean isTXFrameworkEnabled = (transactionalAnnotation != null || compensatableAnnotation != null || restatAnnotation != null);
 
-        return new EndpointMetaData(restatAnnotation, atAnnotation, baAnnotation, webServiceAnnotation, isTXFrameworkEnabled);
+        return new EndpointMetaData(restatAnnotation, transactionalAnnotation, compensatableAnnotation, webServiceAnnotation, isTXFrameworkEnabled);
     }
 
-    public ATAnnotation getAtAnnotation() {
-        return atAnnotation;
+    public TransactionalAnnotation getTransactionalAnnotation() {
+        return transactionalAnnotation;
     }
 
-    public BAAnnotation getBaAnnotation() {
-        return baAnnotation;
+    public CompensatableAnnotation getCompensatableAnnotation() {
+        return compensatableAnnotation;
     }
 
     public RESTATAnnotation getRestatAnnotation() {
