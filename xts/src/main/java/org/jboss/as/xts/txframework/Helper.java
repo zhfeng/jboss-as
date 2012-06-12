@@ -35,8 +35,8 @@ public class Helper {
     public static Set<String> getDeploymentClasses(DeploymentUnit unit) {
 
         final Set<String> endpoints = new HashSet<String>();
-        addEndpointsToList(endpoints, ASHelper.getAnnotations(unit, DotName.createSimple("org.jboss.narayana.txframework.api.annotation.transaction.BA")));
-        addEndpointsToList(endpoints, ASHelper.getAnnotations(unit, DotName.createSimple("org.jboss.narayana.txframework.api.annotation.transaction.AT")));
+        addEndpointsToList(endpoints, ASHelper.getAnnotations(unit, DotName.createSimple(CompensatableAnnotation.COMPENSATABLE_ANNOTATION)));
+        addEndpointsToList(endpoints, ASHelper.getAnnotations(unit, DotName.createSimple(TransactionalAnnotation.TRANSACTIONAL_ANNOTATION)));
         return endpoints;
     }
 
