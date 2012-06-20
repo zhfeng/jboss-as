@@ -1264,6 +1264,12 @@
             </dependency>
 
             <dependency>
+                <groupId>org.jboss.narayana.rts</groupId>
+                <artifactId>restat-util</artifactId>
+                <version>${version.org.jboss.jbossts.narayana}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.jboss.as</groupId>
                 <artifactId>jboss-as-testsuite-protocol-base</artifactId>
                 <version>${project.version}</version>
