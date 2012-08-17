@@ -1043,7 +1043,7 @@
         </module-def>
 
         <module-def name="org.jboss.jts">
-            <maven-resource group="org.jboss.narayana.jts" artifact="narayana-jts"/>
+            <maven-resource group="org.jboss.narayana.jts" artifact="narayana-jts-jacorb"/>
         </module-def>
 
         <module-def name="org.jboss.jts.integration">

@@ -4054,7 +4054,7 @@
 
             <dependency>
                 <groupId>org.jboss.narayana.jts</groupId>
-                <artifactId>narayana-jts</artifactId>
+                <artifactId>narayana-jts-jacorb</artifactId>
                 <version>${version.org.jboss.jbossts.jbossjts}</version>
             </dependency>
 
