@@ -1260,11 +1260,6 @@
 
                 <dependency>
                     <groupId>org.jboss.narayana.rts</groupId>
-                    <artifactId>rest-tx-api</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.narayana.rts</groupId>
                     <artifactId>restat-util</artifactId>
                 </dependency>
 
