@@ -31,7 +31,6 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
 
     private static final String TX_BRIDGE_HANDLER = "org.jboss.jbossts.txbridge.inbound.JaxWSTxInboundBridgeHandler";
     private static final String TX_CONTEXT_HANDLER = "com.arjuna.mw.wst11.service.JaxWSHeaderContextProcessor";
-    private static final String SERVICE_REQUEST_HANDLER = "org.jboss.narayana.txframework.impl.ServiceRequestSoapHandler";
 
     public void deploy(final DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {
 
@@ -53,7 +52,6 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
                     if (endpointMetaData.isWebservice()) {
 
                         List<String> handlers = new ArrayList<String>();
-                        handlers.add(SERVICE_REQUEST_HANDLER);
                         TransactionalAnnotation TransactionalAnnotation = endpointMetaData.getTransactionalAnnotation();
                         if (shouldBridge(TransactionalAnnotation)) {
                             handlers.add(TX_BRIDGE_HANDLER);
