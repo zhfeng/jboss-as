@@ -58,7 +58,7 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
                         }
                         handlers.add(TX_CONTEXT_HANDLER);
 
-                        addHandlerToEndpoint(webservicesMetaData, endpointMetaData.getWebServiceAnnotation(), endpoint, handlers);
+                        addHandlerToEndpoint(webservicesMetaData, endpointMetaData, endpoint, handlers);
                         registerHandlersWithAS(unit, endpoint, handlers);
                         modifiedWSMeta = true;
                     }
@@ -86,23 +86,29 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
         return (bridgeType.equals(BridgeType.JTA) || bridgeType.equals(BridgeType.DEFAULT));
     }
 
-    private void addHandlerToEndpoint(WebservicesMetaData wsWebservicesMetaData, WebServiceAnnotation webServiceAnnotation, String endpointClass, List<String> handlers) {
+    private void addHandlerToEndpoint(WebservicesMetaData wsWebservicesMetaData, EndpointMetaData endpointMetaData, String endpointClass, List<String> handlers) {
 
         WebserviceDescriptionMetaData descriptionMetaData = new WebserviceDescriptionMetaData(wsWebservicesMetaData);
 
         final UnifiedHandlerChainsMetaData unifiedHandlerChainsMetaData = buildHandlerChains(handlers);
-        final QName portQname = webServiceAnnotation.buildPortQName();
-        final PortComponentMetaData portComponent = buildPortComponent(endpointClass, portQname, unifiedHandlerChainsMetaData, descriptionMetaData);
+        final QName portQname = endpointMetaData.getWebServiceAnnotation().buildPortQName();
+        final PortComponentMetaData portComponent = buildPortComponent(endpointMetaData.isEJB(), endpointClass, portQname, unifiedHandlerChainsMetaData, descriptionMetaData);
         descriptionMetaData.addPortComponent(portComponent);
         wsWebservicesMetaData.addWebserviceDescription(descriptionMetaData);
     }
 
-    private PortComponentMetaData buildPortComponent(String endpointClass, QName portQname, UnifiedHandlerChainsMetaData unifiedHandlerChainsMetaData, WebserviceDescriptionMetaData descriptionMetaData) {
+    private PortComponentMetaData buildPortComponent(boolean isEJB, String endpointClass, QName portQname, UnifiedHandlerChainsMetaData unifiedHandlerChainsMetaData, WebserviceDescriptionMetaData descriptionMetaData) {
 
         PortComponentMetaData portComponent = new PortComponentMetaData(descriptionMetaData);
         portComponent.setHandlerChains(unifiedHandlerChainsMetaData);
         portComponent.setServiceEndpointInterface(endpointClass);
         portComponent.setWsdlPort(portQname);
+
+        if (isEJB) {
+            portComponent.setEjbLink(getClassName(endpointClass));
+        } else {
+            portComponent.setServletLink(endpointClass);
+        }
 
         return portComponent;
     }
@@ -146,6 +152,11 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
             existingHandlers.add(handler);
         }
         mapping.registerEndpointHandlers(endpointClass, existingHandlers);
+    }
+
+    private String getClassName(String fQClass) {
+        String[] split = fQClass.split("\\.");
+        return split[split.length-1];
     }
 
     public void undeploy(final DeploymentUnit unit) {

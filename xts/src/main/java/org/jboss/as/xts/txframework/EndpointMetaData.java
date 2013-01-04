@@ -11,10 +11,12 @@ public class EndpointMetaData {
     private TransactionalAnnotation transactionalAnnotation;
     private CompensatableAnnotation compensatableAnnotation;
     private WebServiceAnnotation webServiceAnnotation;
+    private StatelessAnnotation statelessAnnotation;
 
     private boolean isTXFrameworkEnabled;
 
-    private EndpointMetaData(RESTATAnnotation restatAnnotation, TransactionalAnnotation transactionalAnnotation, CompensatableAnnotation compensatableAnnotation, WebServiceAnnotation webServiceAnnotation, boolean isTXFrameworkEnabled) {
+    private EndpointMetaData(StatelessAnnotation statelessAnnotation, RESTATAnnotation restatAnnotation, TransactionalAnnotation transactionalAnnotation, CompensatableAnnotation compensatableAnnotation, WebServiceAnnotation webServiceAnnotation, boolean isTXFrameworkEnabled) {
+        this.statelessAnnotation = statelessAnnotation;
         this.restatAnnotation = restatAnnotation;
         this.transactionalAnnotation = transactionalAnnotation;
         this.compensatableAnnotation = compensatableAnnotation;
@@ -23,13 +25,14 @@ public class EndpointMetaData {
     }
 
     public static EndpointMetaData build(DeploymentUnit unit, String endpoint) throws TXFrameworkException {
+        final StatelessAnnotation statelessAnnotation = StatelessAnnotation.build(unit, endpoint);
         final RESTATAnnotation restatAnnotation = RESTATAnnotation.build(unit, endpoint);
         final TransactionalAnnotation transactionalAnnotation = TransactionalAnnotation.build(unit, endpoint);
         final CompensatableAnnotation compensatableAnnotation = CompensatableAnnotation.build(unit, endpoint);
         final WebServiceAnnotation webServiceAnnotation = WebServiceAnnotation.build(unit, endpoint);
         final boolean isTXFrameworkEnabled = (transactionalAnnotation != null || compensatableAnnotation != null || restatAnnotation != null);
 
-        return new EndpointMetaData(restatAnnotation, transactionalAnnotation, compensatableAnnotation, webServiceAnnotation, isTXFrameworkEnabled);
+        return new EndpointMetaData(statelessAnnotation, restatAnnotation, transactionalAnnotation, compensatableAnnotation, webServiceAnnotation, isTXFrameworkEnabled);
     }
 
     public TransactionalAnnotation getTransactionalAnnotation() {
@@ -54,5 +57,9 @@ public class EndpointMetaData {
 
     public boolean isWebservice() {
         return webServiceAnnotation != null;
+    }
+
+    public boolean isEJB() {
+        return statelessAnnotation != null;
     }
 }
