@@ -34,5 +34,6 @@
       <subsystem>configuration/subsystems/webservices.xml</subsystem>
       <subsystem>configuration/subsystems/weld.xml</subsystem>
       <subsystem>configuration/examples/subsystems/xts.xml</subsystem>
+      <subsystem>configuration/examples/subsystems/txf.xml</subsystem>
    </subsystems>
 </config>
