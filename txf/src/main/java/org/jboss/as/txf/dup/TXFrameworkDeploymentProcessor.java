@@ -1,4 +1,4 @@
-package org.jboss.as.xts;
+package org.jboss.as.txf.dup;
 
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
@@ -6,13 +6,8 @@ import org.jboss.as.server.deployment.DeploymentUnitProcessingException;
 import org.jboss.as.server.deployment.DeploymentUnitProcessor;
 import org.jboss.as.webservices.injection.WSEndpointHandlersMapping;
 import org.jboss.as.webservices.util.WSAttachmentKeys;
-import org.jboss.as.xts.txframework.BridgeType;
-import org.jboss.as.xts.txframework.EndpointMetaData;
-import org.jboss.as.xts.txframework.Helper;
-import org.jboss.as.xts.txframework.TXFrameworkDeploymentMarker;
-import org.jboss.as.xts.txframework.TXFrameworkException;
-import org.jboss.as.xts.txframework.TransactionalAnnotation;
-import org.jboss.as.xts.txframework.WebServiceAnnotation;
+import org.jboss.as.txf.dup.jandex.BridgeType;
+import org.jboss.as.txf.dup.jandex.TransactionalAnnotation;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainsMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerMetaData;

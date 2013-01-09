@@ -1021,6 +1021,10 @@
             <maven-resource group="org.jboss.as" artifact="jboss-as-xts"/>
         </module-def>
 
+        <module-def name="org.jboss.as.txf">
+            <maven-resource group="org.jboss.as" artifact="jboss-as-txf"/>
+        </module-def>
+
         <module-def name="org.jboss.classfilewriter">
             <maven-resource group="org.jboss.classfilewriter" artifact="jboss-classfilewriter"/>
         </module-def>

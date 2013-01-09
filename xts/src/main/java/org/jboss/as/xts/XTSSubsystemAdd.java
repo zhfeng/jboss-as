@@ -155,13 +155,6 @@ class XTSSubsystemAdd extends AbstractBoottimeAddStepHandler {
     @Override
     protected void performBoottime(OperationContext context, ModelNode operation, ModelNode model, ServiceVerificationHandler verificationHandler, List<ServiceController<?>> newControllers) throws OperationFailedException {
 
-        context.addStep(new AbstractDeploymentChainStep() {
-            protected void execute(DeploymentProcessorTarget processorTarget) {
-                // add the DUP for dealing with WS deployments
-                TXFrameworkDeploymentActivator.activate(processorTarget);
-            }
-        }, OperationContext.Stage.RUNTIME);
-
         final String coordinatorURL = model.get(CommonAttributes.XTS_ENVIRONMENT).hasDefined(ModelDescriptionConstants.URL) ? model.get(CommonAttributes.XTS_ENVIRONMENT, ModelDescriptionConstants.URL).asString() : null;
         if (coordinatorURL != null && XtsAsLogger.ROOT_LOGGER.isDebugEnabled()) {
             XtsAsLogger.ROOT_LOGGER.debugf("nodeIdentifier=%s\n", coordinatorURL);
