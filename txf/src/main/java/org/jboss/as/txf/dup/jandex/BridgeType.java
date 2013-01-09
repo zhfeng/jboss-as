@@ -1,5 +1,6 @@
-package org.jboss.as.xts.txframework;
+package org.jboss.as.txf.dup.jandex;
 
+import org.jboss.as.txf.dup.TXFrameworkException;
 import org.jboss.jandex.AnnotationInstance;
 
 /**

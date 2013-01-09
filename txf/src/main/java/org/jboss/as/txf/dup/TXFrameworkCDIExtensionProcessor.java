@@ -1,4 +1,4 @@
-package org.jboss.as.xts.txframework;
+package org.jboss.as.txf.dup;
 
 import org.jboss.as.server.deployment.Attachments;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
