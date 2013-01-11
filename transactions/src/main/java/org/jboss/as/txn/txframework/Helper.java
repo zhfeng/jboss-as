@@ -1,8 +1,8 @@
-package org.jboss.as.txf.dup;
+package org.jboss.as.txn.txframework;
 
 import org.jboss.as.server.deployment.DeploymentUnit;
-import org.jboss.as.txf.dup.jandex.CompensatableAnnotation;
-import org.jboss.as.txf.dup.jandex.TransactionalAnnotation;
+import org.jboss.as.txn.txframework.jandex.CompensatableAnnotation;
+import org.jboss.as.txn.txframework.jandex.TransactionalAnnotation;
 import org.jboss.as.webservices.util.ASHelper;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationValue;

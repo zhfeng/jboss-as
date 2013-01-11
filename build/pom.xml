@@ -1123,11 +1123,6 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-txf</artifactId>
-                </dependency>
-
-                <dependency>
                     <groupId>org.jboss.narayana.txframework</groupId>
                     <artifactId>txframework</artifactId>
                 </dependency>

@@ -57,6 +57,7 @@ import org.jboss.as.txn.service.TxnServices;
 import org.jboss.as.txn.service.UserTransactionRegistryService;
 import org.jboss.as.txn.service.UserTransactionService;
 import org.jboss.as.txn.service.XATerminatorService;
+import org.jboss.as.txn.txframework.TXFrameworkDeploymentActivator;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.inject.InjectionException;
 import org.jboss.msc.inject.Injector;
@@ -262,6 +263,13 @@ class TransactionSubsystemAdd extends AbstractBoottimeAddStepHandler {
         utBuilder.addListener(verificationHandler);
         controllers.add(utBuilder.install());
 
+        //Enable TXFramework DUP
+        context.addStep(new AbstractDeploymentChainStep() {
+            protected void execute(DeploymentProcessorTarget processorTarget) {
+                // add the DUP for dealing with WS deployments
+                TXFrameworkDeploymentActivator.activate(processorTarget);
+            }
+        }, OperationContext.Stage.RUNTIME);
 
     }
 

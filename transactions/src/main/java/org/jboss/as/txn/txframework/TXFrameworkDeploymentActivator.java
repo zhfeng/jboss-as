@@ -1,4 +1,4 @@
-package org.jboss.as.txf.dup;
+package org.jboss.as.txn.txframework;
 
 import org.jboss.as.server.DeploymentProcessorTarget;
 import org.jboss.as.server.deployment.Phase;

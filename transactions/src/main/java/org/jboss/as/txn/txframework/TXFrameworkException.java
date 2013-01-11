@@ -1,4 +1,4 @@
-package org.jboss.as.txf.dup;
+package org.jboss.as.txn.txframework;
 
 /**
  * @author paul.robinson@redhat.com, 2012-02-06

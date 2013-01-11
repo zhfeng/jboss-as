@@ -1,13 +1,15 @@
-package org.jboss.as.txf.dup;
+package org.jboss.as.txn.txframework;
 
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.DeploymentUnitProcessingException;
 import org.jboss.as.server.deployment.DeploymentUnitProcessor;
-import org.jboss.as.webservices.injection.WSEndpointHandlersMapping;
-import org.jboss.as.webservices.util.WSAttachmentKeys;
 import org.jboss.as.txf.dup.jandex.BridgeType;
 import org.jboss.as.txf.dup.jandex.TransactionalAnnotation;
+import org.jboss.as.txn.txframework.jandex.BridgeType;
+import org.jboss.as.txn.txframework.jandex.TransactionalAnnotation;
+import org.jboss.as.webservices.injection.WSEndpointHandlersMapping;
+import org.jboss.as.webservices.util.WSAttachmentKeys;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainsMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerMetaData;
@@ -16,7 +18,6 @@ import org.jboss.wsf.spi.metadata.webservices.WebserviceDescriptionMetaData;
 import org.jboss.wsf.spi.metadata.webservices.WebservicesMetaData;
 
 import javax.xml.namespace.QName;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
