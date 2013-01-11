@@ -62,57 +62,7 @@
         </dependency>
         <dependency>
             <groupId>org.jboss.as</groupId>
-            <artifactId>jboss-as-transactions</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-webservices-server-integration</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.as</groupId>
-            <artifactId>jboss-as-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.narayana.jts</groupId>
-            <artifactId>narayana-jts-jacorb</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.narayana.xts</groupId>
-            <artifactId>jbossxts</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.narayana.xts</groupId>
-            <artifactId>jbossxts</artifactId>
-            <classifier>api</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.narayana</groupId>
-            <artifactId>jbosstxbridge</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.ws</groupId>
-            <artifactId>jbossws-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.as</groupId>
-            <artifactId>jboss-as-subsystem-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.logging</groupId>
-            <artifactId>jboss-logging</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.narayana.txframework</groupId>
-            <artifactId>txframework</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.logging</groupId>
-            <artifactId>jboss-logging-processor</artifactId>
-            <!-- This is a compile-time dependency of this project, but is not needed at compile or runtime by other
-                  projects that depend on this project.-->
-            <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.jboss.as</groupId>
