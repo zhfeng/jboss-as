@@ -31,14 +31,9 @@
     <dependencies>
         <module name="javax.ejb.api" />
         <module name="org.jboss.jts" />
-        <module name="org.jboss.ws.spi" />
-	<module name="org.apache.cxf" />
-	<module name="org.apache.cxf.impl" />
         <module name="javax.xml.ws.api" />
-        <module name="org.jboss.weld.spi" />
         <module name="org.jboss.weld.api" />
         <module name="org.jboss.weld.core" />
-        <module name="org.jboss.as.weld"/>
 	<module name="javax.enterprise.api"/>
 	<module name="org.jboss.xts" export="true"/>
         <module name="javax.transaction.api" export="true" />
