@@ -46,6 +46,10 @@
         <module name="org.jboss.ws.spi"/>
         <module name="org.jboss.ws.common"/>
         <module name="org.jboss.as.webservices.server.integration"/>
-
+        <module name="org.jboss.as.ee"/>
+        <module name="org.jboss.as.ejb3"/>
+        <module name="org.jboss.invocation"/>
+        <module name="org.jboss.as.naming"/>
+        <module name="org.jboss.as.web"/>
     </dependencies>
 </module>

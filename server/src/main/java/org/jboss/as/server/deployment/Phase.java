@@ -268,7 +268,8 @@ public enum Phase {
     public static final int PARSE_TXFRAMEWORK_HANDLERS                  = 0x2056;
     public static final int PARSE_WS_JMS_INTEGRATION                    = 0x2057;
     public static final int PARSE_JAXWS_ENDPOINT_CREATE_COMPONENT_DESCRIPTIONS = 0x2058;
-    public static final int PARSE_JAXWS_HANDLER_CREATE_COMPONENT_DESCRIPTIONS = 0x2059;
+    public static final int PARSE_TXFRAMEWORK_INTERCEPTORS = 0x2059;
+    public static final int PARSE_JAXWS_HANDLER_CREATE_COMPONENT_DESCRIPTIONS = 0x2060;
     public static final int PARSE_RA_DEPLOYMENT                         = 0x2100;
     public static final int PARSE_SERVICE_LOADER_DEPLOYMENT             = 0x2200;
     public static final int PARSE_SERVICE_DEPLOYMENT                    = 0x2300;
