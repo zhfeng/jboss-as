@@ -1,9 +1,9 @@
-package org.jboss.as.txf.dup.jandex;
+package org.jboss.as.xts.jandex;
 
 import org.jboss.as.server.deployment.DeploymentUnit;
-import org.jboss.as.txf.dup.Helper;
-import org.jboss.as.txf.dup.TXFrameworkException;
+import org.jboss.as.xts.XTSException;
 import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationValue;
 
 import javax.xml.namespace.QName;
 
@@ -29,19 +29,27 @@ public class WebServiceAnnotation {
         this.targetNamespace = targetNamespace;
     }
 
-    public static WebServiceAnnotation build(DeploymentUnit unit, String endpoint) throws TXFrameworkException {
-        AnnotationInstance annotationInstance = Helper.getAnnotation(unit, endpoint, WEBSERVICE_ANNOTATION);
+    public static WebServiceAnnotation build(DeploymentUnit unit, String endpoint) throws XTSException {
+        AnnotationInstance annotationInstance = JandexHelper.getAnnotation(unit, endpoint, WEBSERVICE_ANNOTATION);
 
         if (annotationInstance == null) {
             return null;
         }
 
-        final String portName = Helper.getStringVaue(annotationInstance, "portName");
-        final String serviceName = Helper.getStringVaue(annotationInstance, "serviceName");
-        final String name = Helper.getStringVaue(annotationInstance, "name");
-        final String targetNamespace = Helper.getStringVaue(annotationInstance, "targetNamespace");
+        final String portName = getStringVaue(annotationInstance, "portName");
+        final String serviceName = getStringVaue(annotationInstance, "serviceName");
+        final String name = getStringVaue(annotationInstance, "name");
+        final String targetNamespace = getStringVaue(annotationInstance, "targetNamespace");
 
         return new WebServiceAnnotation(portName, serviceName, name, targetNamespace);
+    }
+
+    private static String getStringVaue(AnnotationInstance annotationInstance, String key) {
+        AnnotationValue value = annotationInstance.value(key);
+        if (value == null) {
+            return null;
+        }
+        return value.asString();
     }
 
     public QName buildPortQName() {

@@ -1,4 +1,4 @@
-package org.jboss.as.txf.dup;
+package org.jboss.as.xts;
 
 import org.jboss.as.ee.component.Attachments;
 import org.jboss.as.ee.component.ComponentConfiguration;
@@ -14,12 +14,10 @@ import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.DeploymentUnitProcessingException;
 import org.jboss.as.server.deployment.DeploymentUnitProcessor;
-import org.jboss.as.txf.TXFEJBInterceptor;
-import org.jboss.as.txf.TXFPOJOInterceptor;
 import org.jboss.as.webservices.injection.WSComponentDescription;
 
 
-public class TXFrameworkDeploymentProcessorInterceptors implements DeploymentUnitProcessor {
+public class XTSInterceptorDeploymentProcessor implements DeploymentUnitProcessor {
 
 
     public void deploy(final DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {
@@ -44,9 +42,9 @@ public class TXFrameworkDeploymentProcessorInterceptors implements DeploymentUni
                 @Override
                 public void configure(DeploymentPhaseContext context, ComponentDescription description, ComponentConfiguration configuration) throws
                         DeploymentUnitProcessingException {
-                    configuration.addComponentInterceptor(TXFEJBInterceptor.FACTORY, InterceptorOrder.Component.TXF_HANDLERS_INTERCEPTOR, false);
+                    configuration.addComponentInterceptor(XTSEJBInterceptor.FACTORY, InterceptorOrder.Component.TXF_HANDLERS_INTERCEPTOR, false);
 
-                    configuration.getInterceptorContextKeys().add(TXFEJBInterceptor.CONTEXT_KEY);
+                    configuration.getInterceptorContextKeys().add(XTSEJBInterceptor.CONTEXT_KEY);
                 }
             });
         }
@@ -58,7 +56,7 @@ public class TXFrameworkDeploymentProcessorInterceptors implements DeploymentUni
             view.getConfigurators().add(new ViewConfigurator() {
                 @Override
                 public void configure(DeploymentPhaseContext context, ComponentConfiguration componentConfiguration, ViewDescription description, ViewConfiguration configuration) throws DeploymentUnitProcessingException {
-                    configuration.addViewInterceptor(TXFPOJOInterceptor.FACTORY, InterceptorOrder.View.TXF_INTERCEPTOR);
+                    configuration.addViewInterceptor(XTSPOJOInterceptor.FACTORY, InterceptorOrder.View.TXF_INTERCEPTOR);
                 }
             });
         }

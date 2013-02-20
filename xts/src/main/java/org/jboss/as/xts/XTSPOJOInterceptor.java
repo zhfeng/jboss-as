@@ -1,4 +1,4 @@
-package org.jboss.as.txf;
+package org.jboss.as.xts;
 
 import org.jboss.as.ee.component.ComponentInstance;
 import org.jboss.invocation.ImmediateInterceptorFactory;
@@ -17,11 +17,11 @@ import java.lang.reflect.Method;
 /**
  * @author paul.robinson@redhat.com 01/02/2013
  */
-public class TXFPOJOInterceptor implements Interceptor {
+public class XTSPOJOInterceptor implements Interceptor {
 
-    public static final InterceptorFactory FACTORY = new ImmediateInterceptorFactory(new TXFPOJOInterceptor());
+    public static final InterceptorFactory FACTORY = new ImmediateInterceptorFactory(new XTSPOJOInterceptor());
 
-    protected TXFPOJOInterceptor() {
+    protected XTSPOJOInterceptor() {
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TXFPOJOInterceptor implements Interceptor {
 
         @Override
         public Interceptor create(final InterceptorFactoryContext context) {
-            return new TXFPOJOInterceptor();
+            return new XTSPOJOInterceptor();
         }
     }
 }

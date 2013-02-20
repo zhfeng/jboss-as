@@ -1,6 +1,6 @@
-package org.jboss.as.txf.dup.jandex;
+package org.jboss.as.xts.jandex;
 
-import org.jboss.as.txf.dup.TXFrameworkException;
+import org.jboss.as.xts.XTSException;
 import org.jboss.jandex.AnnotationInstance;
 
 /**
@@ -10,7 +10,7 @@ public enum BridgeType {
 
     DEFAULT, NONE, JTA;
 
-    public static BridgeType build(AnnotationInstance annotationInstance) throws TXFrameworkException {
+    public static BridgeType build(AnnotationInstance annotationInstance) throws XTSException {
 
         if (annotationInstance.value("bridgeType") == null) {
             return DEFAULT;
@@ -25,7 +25,7 @@ public enum BridgeType {
         } else if (bridgeType.equals("JTA")) {
             return JTA;
         } else {
-            throw new TXFrameworkException("Unexpected bridge type: '" + bridgeType + "'");
+            throw new XTSException("Unexpected bridge type: '" + bridgeType + "'");
         }
     }
 }

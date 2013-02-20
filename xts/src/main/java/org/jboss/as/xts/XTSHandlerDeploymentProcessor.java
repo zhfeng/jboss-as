@@ -1,13 +1,19 @@
-package org.jboss.as.txf.dup;
+package org.jboss.as.xts;
 
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.DeploymentUnitProcessingException;
 import org.jboss.as.server.deployment.DeploymentUnitProcessor;
-import org.jboss.as.txf.dup.jandex.BridgeType;
-import org.jboss.as.txf.dup.jandex.TransactionalAnnotation;
+import org.jboss.as.xts.jandex.BridgeType;
+import org.jboss.as.xts.jandex.CompensatableAnnotation;
+import org.jboss.as.xts.jandex.EndpointMetaData;
+import org.jboss.as.xts.jandex.TransactionalAnnotation;
 import org.jboss.as.webservices.injection.WSEndpointHandlersMapping;
+import org.jboss.as.webservices.util.ASHelper;
 import org.jboss.as.webservices.util.WSAttachmentKeys;
+import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.DotName;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainsMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerMetaData;
@@ -22,7 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
+public class XTSHandlerDeploymentProcessor implements DeploymentUnitProcessor {
 
     private static final String TX_BRIDGE_HANDLER = "org.jboss.jbossts.txbridge.inbound.JaxWSTxInboundBridgeHandler";
     private static final String TX_CONTEXT_HANDLER = "com.arjuna.mw.wst11.service.JaxWSHeaderContextProcessor";
@@ -35,14 +41,14 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
 
         boolean modifiedWSMeta = false;
 
-        for (String endpoint : Helper.getDeploymentClasses(unit)) {
+        for (String endpoint : getDeploymentClasses(unit)) {
             try {
 
                 EndpointMetaData endpointMetaData = EndpointMetaData.build(unit, endpoint);
 
                 if (endpointMetaData.isTXFrameworkEnabled()) {
 
-                    TXFrameworkDeploymentMarker.mark(unit);
+                    CDIDeploymentMarker.mark(unit);
 
                     if (endpointMetaData.isWebservice()) {
 
@@ -60,7 +66,7 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
 
                 }
 
-            } catch (TXFrameworkException e) {
+            } catch (XTSException e) {
                 throw new DeploymentUnitProcessingException("Error processing endpoint '" + endpoint + "'", e);
             }
         }
@@ -152,6 +158,22 @@ public class TXFrameworkDeploymentProcessor implements DeploymentUnitProcessor {
     private String getClassName(String fQClass) {
         String[] split = fQClass.split("\\.");
         return split[split.length - 1];
+    }
+
+    private Set<String> getDeploymentClasses(DeploymentUnit unit) {
+
+        final Set<String> endpoints = new HashSet<String>();
+        addEndpointsToList(endpoints, ASHelper.getAnnotations(unit, DotName.createSimple(CompensatableAnnotation.COMPENSATABLE_ANNOTATION)));
+        addEndpointsToList(endpoints, ASHelper.getAnnotations(unit, DotName.createSimple(TransactionalAnnotation.TRANSACTIONAL_ANNOTATION)));
+        return endpoints;
+    }
+
+    private void addEndpointsToList(Set<String> endpoints, List<AnnotationInstance> annotations) {
+        for (AnnotationInstance annotationInstance : annotations) {
+            final ClassInfo classInfo = (ClassInfo) annotationInstance.target();
+            final String endpointClass = classInfo.name().toString();
+            endpoints.add(endpointClass);
+        }
     }
 
     public void undeploy(final DeploymentUnit unit) {

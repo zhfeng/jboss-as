@@ -1014,17 +1014,9 @@
         <module-def name="org.jboss.as.weld">
             <maven-resource group="org.jboss.as" artifact="jboss-as-weld"/>
         </module-def>
-        <module-def name="org.jboss.narayana.txframework">
-            <maven-resource group="org.jboss.narayana.txframework" artifact="txframework"/>
-            <maven-resource group="org.jboss.narayana.rts" artifact="restat-util"/>
-        </module-def>
 
         <module-def name="org.jboss.as.xts">
             <maven-resource group="org.jboss.as" artifact="jboss-as-xts"/>
-        </module-def>
-
-        <module-def name="org.jboss.as.txf">
-            <maven-resource group="org.jboss.as" artifact="jboss-as-txf"/>
         </module-def>
 
         <module-def name="org.jboss.classfilewriter">
@@ -1274,8 +1266,9 @@
 
         <module-def name="org.jboss.xts">
             <maven-resource group="org.jboss.narayana.xts" artifact="jbossxts"/>
-            <!--maven-resource group="org.jboss.narayana.xts" artifact="jbossxts" classifier="api"/-->
             <maven-resource group="org.jboss.narayana" artifact="jbosstxbridge"/>
+            <maven-resource group="org.jboss.narayana.txframework" artifact="txframework"/>
+            <maven-resource group="org.jboss.narayana.rts" artifact="restat-util"/>
         </module-def>
 
         <module-def name="org.jgroups">

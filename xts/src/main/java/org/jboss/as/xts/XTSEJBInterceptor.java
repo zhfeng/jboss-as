@@ -1,4 +1,4 @@
-package org.jboss.as.txf;
+package org.jboss.as.xts;
 
 import org.jboss.as.ee.component.ComponentView;
 import org.jboss.as.naming.ManagedReference;
@@ -18,13 +18,13 @@ import java.lang.reflect.Method;
 /**
  * @author paul.robinson@redhat.com 01/02/2013
  */
-public class TXFEJBInterceptor implements Interceptor {
+public class XTSEJBInterceptor implements Interceptor {
 
     public static final String CONTEXT_KEY = "org.jboss.as.txf.InterceptorContextKey";
 
-    public static final InterceptorFactory FACTORY = new ImmediateInterceptorFactory(new TXFEJBInterceptor());
+    public static final InterceptorFactory FACTORY = new ImmediateInterceptorFactory(new XTSEJBInterceptor());
 
-    protected TXFEJBInterceptor() {
+    protected XTSEJBInterceptor() {
     }
 
     @Override
@@ -66,7 +66,7 @@ public class TXFEJBInterceptor implements Interceptor {
 
         @Override
         public Interceptor create(final InterceptorFactoryContext context) {
-            return new TXFEJBInterceptor();
+            return new XTSEJBInterceptor();
         }
     }
 }

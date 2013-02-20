@@ -1,8 +1,7 @@
-package org.jboss.as.txf.dup.jandex;
+package org.jboss.as.xts.jandex;
 
 import org.jboss.as.server.deployment.DeploymentUnit;
-import org.jboss.as.txf.dup.Helper;
-import org.jboss.as.txf.dup.TXFrameworkException;
+import org.jboss.as.xts.XTSException;
 import org.jboss.jandex.AnnotationInstance;
 
 /**
@@ -16,9 +15,9 @@ public class CompensatableAnnotation {
     }
 
 
-    public static CompensatableAnnotation build(DeploymentUnit unit, String endpoint) throws TXFrameworkException {
+    public static CompensatableAnnotation build(DeploymentUnit unit, String endpoint) throws XTSException {
 
-        final AnnotationInstance annotationInstance = Helper.getAnnotation(unit, endpoint, COMPENSATABLE_ANNOTATION);
+        final AnnotationInstance annotationInstance = JandexHelper.getAnnotation(unit, endpoint, COMPENSATABLE_ANNOTATION);
         if (annotationInstance == null) {
             return null;
         }

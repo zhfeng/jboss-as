@@ -1,11 +1,7 @@
-package org.jboss.as.txf.dup;
+package org.jboss.as.xts.jandex;
 
 import org.jboss.as.server.deployment.DeploymentUnit;
-import org.jboss.as.txf.dup.jandex.CompensatableAnnotation;
-import org.jboss.as.txf.dup.jandex.RESTATAnnotation;
-import org.jboss.as.txf.dup.jandex.StatelessAnnotation;
-import org.jboss.as.txf.dup.jandex.TransactionalAnnotation;
-import org.jboss.as.txf.dup.jandex.WebServiceAnnotation;
+import org.jboss.as.xts.XTSException;
 
 /**
  * @author paul.robinson@redhat.com, 2012-02-06
@@ -29,7 +25,7 @@ public class EndpointMetaData {
         this.isTXFrameworkEnabled = isTXFrameworkEnabled;
     }
 
-    public static EndpointMetaData build(DeploymentUnit unit, String endpoint) throws TXFrameworkException {
+    public static EndpointMetaData build(DeploymentUnit unit, String endpoint) throws XTSException {
         final StatelessAnnotation statelessAnnotation = StatelessAnnotation.build(unit, endpoint);
         final RESTATAnnotation restatAnnotation = RESTATAnnotation.build(unit, endpoint);
         final TransactionalAnnotation transactionalAnnotation = TransactionalAnnotation.build(unit, endpoint);

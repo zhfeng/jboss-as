@@ -1,4 +1,4 @@
-package org.jboss.as.txf.dup;
+package org.jboss.as.xts;
 
 import org.jboss.as.server.deployment.Attachments;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
@@ -16,7 +16,7 @@ import java.lang.reflect.Constructor;
 /**
  * @author paul.robinson@redhat.com, 2012-02-09
  */
-public class TXFrameworkCDIExtensionProcessor implements DeploymentUnitProcessor {
+public class CDIExtensionProcessor implements DeploymentUnitProcessor {
 
     private static final String[] EMPTY_STRING_ARRAY = {};
     private static final String[] EXTENSIONS = {"org.jboss.narayana.txframework.impl.as.TXFrameworkCDIExtension"};
@@ -24,7 +24,7 @@ public class TXFrameworkCDIExtensionProcessor implements DeploymentUnitProcessor
     public void deploy(DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {
         final DeploymentUnit unit = phaseContext.getDeploymentUnit();
 
-        if (!TXFrameworkDeploymentMarker.isTXFrameworkDeployment(unit)) {
+        if (!CDIDeploymentMarker.isXTSAnnotationDeployment(unit)) {
             return;
         }
 
