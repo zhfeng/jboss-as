@@ -118,7 +118,7 @@ class XTSSubsystemAdd extends AbstractBoottimeAddStepHandler {
                             new EndpointInfo("com.arjuna.webservices11.wsba.sei.BusinessAgreementWithParticipantCompletionCoordinatorPortTypeImpl", "BusinessAgreementWithParticipantCompletionCoordinatorService"),
                             new EndpointInfo("com.arjuna.webservices11.wsarjtx.sei.TerminationCoordinatorPortTypeImpl", "TerminationCoordinatorService"),
                             new EndpointInfo("com.arjuna.webservices11.wsarjtx.sei.TerminationCoordinatorRPCPortTypeImpl", "TerminationCoordinatorRPCService")
-                            }),
+                     }),
             new ContextInfo("ws-t11-participant",
                     new EndpointInfo[]{
                             new EndpointInfo("com.arjuna.webservices11.wsat.sei.ParticipantPortTypeImpl", "ParticipantService"),
@@ -162,8 +162,8 @@ class XTSSubsystemAdd extends AbstractBoottimeAddStepHandler {
 
         context.addStep(new AbstractDeploymentChainStep() {
             protected void execute(DeploymentProcessorTarget processorTarget) {
-                processorTarget.addDeploymentProcessor(XTSExtension.SUBSYSTEM_NAME, Phase.PARSE, Phase.PARSE_TXFRAMEWORK_INTERCEPTORS, new XTSInterceptorDeploymentProcessor());
-                processorTarget.addDeploymentProcessor(XTSExtension.SUBSYSTEM_NAME, Phase.PARSE, Phase.PARSE_TXFRAMEWORK_HANDLERS, new XTSHandlerDeploymentProcessor());
+                processorTarget.addDeploymentProcessor(XTSExtension.SUBSYSTEM_NAME, Phase.PARSE, Phase.PARSE_XTS_COMPONENT_INTERCEPTORS, new XTSInterceptorDeploymentProcessor());
+                processorTarget.addDeploymentProcessor(XTSExtension.SUBSYSTEM_NAME, Phase.PARSE, Phase.PARSE_XTS_SOAP_HANDLERS, new XTSHandlerDeploymentProcessor());
                 processorTarget.addDeploymentProcessor(XTSExtension.SUBSYSTEM_NAME, Phase.POST_MODULE, Phase.POST_MODULE_WELD_PORTABLE_EXTENSIONS + 10, new CDIExtensionProcessor());
             }
         }, OperationContext.Stage.RUNTIME);
