@@ -49,21 +49,19 @@
         <!-- this is needed to ensure @Resource annotations on the JaxWS endpoint classes are in the
              classloader scope-->
         <module name="javax.annotation.api"/>
-        <!-- this is needed to ensure the JaxWS endpoint classes canb refer to HttpServletRequest etc -->
-        
         
         <module name="javax.servlet.api" export="true" />
-	<module name="javax.ejb.api" />
+        <module name="javax.ejb.api" />
         <module name="org.jboss.jts" />
         <module name="javax.xml.ws.api" />
         <module name="org.jboss.weld.api" />
         <module name="org.jboss.weld.core" />
-	<module name="javax.enterprise.api"/>
+        <module name="javax.enterprise.api"/>
         <module name="javax.transaction.api" export="true" />
         <module name="org.jboss.logging" export="true" />
         
-	<!-- Following required for REST-AT. move into RTS subsytem when we have it -->
-	<module name="javax.ws.rs.api" />
+        <!-- Following required for REST-AT. move into RTS subsytem when we have it -->
+        <module name="javax.ws.rs.api" />
         <module name="org.jboss.resteasy.resteasy-jaxrs" />
     </dependencies>
 </module>

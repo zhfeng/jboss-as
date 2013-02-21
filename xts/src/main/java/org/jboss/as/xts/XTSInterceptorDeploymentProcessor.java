@@ -42,7 +42,7 @@ public class XTSInterceptorDeploymentProcessor implements DeploymentUnitProcesso
                 @Override
                 public void configure(DeploymentPhaseContext context, ComponentDescription description, ComponentConfiguration configuration) throws
                         DeploymentUnitProcessingException {
-                    configuration.addComponentInterceptor(XTSEJBInterceptor.FACTORY, InterceptorOrder.Component.TXF_HANDLERS_INTERCEPTOR, false);
+                    configuration.addComponentInterceptor(XTSEJBInterceptor.FACTORY, InterceptorOrder.Component.XTS_HANDLERS_INTERCEPTOR, false);
 
                     configuration.getInterceptorContextKeys().add(XTSEJBInterceptor.CONTEXT_KEY);
                 }
@@ -56,7 +56,7 @@ public class XTSInterceptorDeploymentProcessor implements DeploymentUnitProcesso
             view.getConfigurators().add(new ViewConfigurator() {
                 @Override
                 public void configure(DeploymentPhaseContext context, ComponentConfiguration componentConfiguration, ViewDescription description, ViewConfiguration configuration) throws DeploymentUnitProcessingException {
-                    configuration.addViewInterceptor(XTSPOJOInterceptor.FACTORY, InterceptorOrder.View.TXF_INTERCEPTOR);
+                    configuration.addViewInterceptor(XTSPOJOInterceptor.FACTORY, InterceptorOrder.View.XTS_INTERCEPTOR);
                 }
             });
         }

@@ -105,12 +105,12 @@ class XTSSubsystemAdd extends AbstractBoottimeAddStepHandler {
      */
     private static final ContextInfo[] contextDefinitions = {
             new ContextInfo("ws-c11",
-                    new EndpointInfo[] {
+                    new EndpointInfo[]{
                             new EndpointInfo("com.arjuna.webservices11.wscoor.sei.ActivationPortTypeImpl", "ActivationService"),
                             new EndpointInfo("com.arjuna.webservices11.wscoor.sei.RegistrationPortTypeImpl", "RegistrationService")
-                            }),
+                    }),
             new ContextInfo("ws-t11-coordinator",
-                    new EndpointInfo[] {
+                    new EndpointInfo[]{
                             new EndpointInfo("com.arjuna.webservices11.wsat.sei.CoordinatorPortTypeImpl", "CoordinatorService"),
                             new EndpointInfo("com.arjuna.webservices11.wsat.sei.CompletionCoordinatorPortTypeImpl", "CompletionCoordinatorService"),
                             new EndpointInfo("com.arjuna.webservices11.wsat.sei.CompletionCoordinatorRPCPortTypeImpl", "CompletionCoordinatorRPCService"),
@@ -120,17 +120,17 @@ class XTSSubsystemAdd extends AbstractBoottimeAddStepHandler {
                             new EndpointInfo("com.arjuna.webservices11.wsarjtx.sei.TerminationCoordinatorRPCPortTypeImpl", "TerminationCoordinatorRPCService")
                             }),
             new ContextInfo("ws-t11-participant",
-                    new EndpointInfo[] {
+                    new EndpointInfo[]{
                             new EndpointInfo("com.arjuna.webservices11.wsat.sei.ParticipantPortTypeImpl", "ParticipantService"),
                             new EndpointInfo("com.arjuna.webservices11.wsba.sei.BusinessAgreementWithCoordinatorCompletionParticipantPortTypeImpl", "BusinessAgreementWithCoordinatorCompletionParticipantService"),
                             new EndpointInfo("com.arjuna.webservices11.wsba.sei.BusinessAgreementWithParticipantCompletionParticipantPortTypeImpl", "BusinessAgreementWithParticipantCompletionParticipantService"),
-                            }),
+                    }),
             new ContextInfo("ws-t11-client",
-                    new EndpointInfo[] {
+                    new EndpointInfo[]{
                             new EndpointInfo("com.arjuna.webservices11.wsat.sei.CompletionInitiatorPortTypeImpl", "CompletionInitiatorService"),
                             new EndpointInfo("com.arjuna.webservices11.wsarjtx.sei.TerminationParticipantPortTypeImpl", "TerminationParticipantService")
-                            })
-            };
+                    })
+    };
 
     /**
      * the hsot name used when deploying endpoints for the local host via the endpoint publisher service
