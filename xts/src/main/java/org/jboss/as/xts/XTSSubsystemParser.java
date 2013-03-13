@@ -62,7 +62,6 @@ class XTSSubsystemParser implements XMLStreamConstants, XMLElementReader<List<Mo
         list.add(subsystem);
 
         // elements
-        final EnumSet<Element> required = EnumSet.of(Element.DEFAULT_CONTEXT_PROPAGATION);
         final EnumSet<Element> encountered = EnumSet.noneOf(Element.class);
 
         while (reader.hasNext() && reader.nextTag() != END_ELEMENT) {
@@ -72,8 +71,6 @@ class XTSSubsystemParser implements XMLStreamConstants, XMLElementReader<List<Mo
                     if (!encountered.add(element)) {
                         throw ParseUtils.unexpectedElement(reader);
                     }
-                    required.remove(element);
-
                     switch (element) {
                         case XTS_ENVIRONMENT: {
                             parseXTSEnvironmentElement(reader,subsystem);
@@ -93,10 +90,6 @@ class XTSSubsystemParser implements XMLStreamConstants, XMLElementReader<List<Mo
                     throw ParseUtils.unexpectedElement(reader);
                 }
             }
-        }
-
-        if (!required.isEmpty()) {
-            throw ParseUtils.missingRequiredElement(reader, required);
         }
     }
 
@@ -137,13 +130,11 @@ class XTSSubsystemParser implements XMLStreamConstants, XMLElementReader<List<Mo
      * @throws XMLStreamException
      */
     static void parseDefaultContextPropagationElement(XMLExtendedStreamReader reader, ModelNode subsystem) throws XMLStreamException {
-        final EnumSet<Attribute> required = EnumSet.of(Attribute.ENABLED);
         final int count = reader.getAttributeCount();
         for (int i = 0; i < count; i++) {
             ParseUtils.requireNoNamespaceAttribute(reader, i);
             final String value = reader.getAttributeValue(i);
             final Attribute attribute = Attribute.forName(reader.getAttributeLocalName(i));
-            required.remove(attribute);
             switch (attribute) {
                 case ENABLED:
                     if (value == null || (!value.toLowerCase().equals("true") && !value.toLowerCase().equals("false"))) {
@@ -158,10 +149,6 @@ class XTSSubsystemParser implements XMLStreamConstants, XMLElementReader<List<Mo
 
         // Handle elements
         ParseUtils.requireNoContent(reader);
-
-        if (!required.isEmpty()) {
-            throw ParseUtils.missingRequired(reader, required);
-        }
     }
 
     /**

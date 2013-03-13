@@ -44,7 +44,7 @@
         </xs:annotation>
         <xs:all>
             <xs:element name="xts-environment" type="xts-environment" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="default-context-propagation" type="default-context-propagation" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="default-context-propagation" type="default-context-propagation" minOccurs="0" maxOccurs="1"/>
         </xs:all>
     </xs:complexType>
 
@@ -80,7 +80,7 @@
             ]]>
             </xs:documentation>
         </xs:annotation>
-        <xs:attribute name="enabled" type="xs:boolean" use="required" />
+        <xs:attribute name="enabled" type="xs:boolean" use="optional" />
     </xs:complexType>
 
 </xs:schema>
