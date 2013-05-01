@@ -700,6 +700,12 @@
                 <dependency>
                     <groupId>org.hibernate</groupId>
                     <artifactId>hibernate-core</artifactId>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.spec.javax.transaction</groupId>
+                            <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
 
                 <dependency>
@@ -710,6 +716,12 @@
                 <dependency>
                     <groupId>org.hibernate</groupId>
                     <artifactId>hibernate-entitymanager</artifactId>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.spec.javax.transaction</groupId>
+                            <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
 
                 <dependency>
@@ -750,6 +762,12 @@
                 <dependency>
                     <groupId>org.hornetq</groupId>
                     <artifactId>hornetq-jms-server</artifactId>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.spec.javax.transaction</groupId>
+                            <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
 
                 <dependency>
@@ -790,6 +808,12 @@
                 <dependency>
                     <groupId>org.infinispan</groupId>
                     <artifactId>infinispan-core</artifactId>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.spec.javax.transaction</groupId>
+                            <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
 
                 <dependency>
@@ -1230,16 +1254,34 @@
                 <dependency>
                     <groupId>org.jboss</groupId>
                     <artifactId>jboss-transaction-spi</artifactId>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.spec.javax.transaction</groupId>
+                            <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
 
                 <dependency>
                     <groupId>org.jboss.ironjacamar</groupId>
                     <artifactId>ironjacamar-core-api</artifactId>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.spec.javax.transaction</groupId>
+                            <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
 
                 <dependency>
                     <groupId>org.jboss.ironjacamar</groupId>
                     <artifactId>ironjacamar-core-impl</artifactId>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.spec.javax.transaction</groupId>
+                            <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
 
                 <dependency>
@@ -1265,11 +1307,23 @@
                 <dependency>
                     <groupId>org.jboss.ironjacamar</groupId>
                     <artifactId>ironjacamar-jdbc</artifactId>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.spec.javax.transaction</groupId>
+                            <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
 
                 <dependency>
                     <groupId>org.jboss.ironjacamar</groupId>
                     <artifactId>ironjacamar-spec-api</artifactId>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.spec.javax.transaction</groupId>
+                            <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
 
                 <dependency>
@@ -1617,7 +1671,13 @@
 
                 <dependency>
                     <groupId>org.jboss.spec.javax.transaction</groupId>
+                    <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.spec.javax.transaction</groupId>
                     <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                    <version>1.0.1.Final</version>
                 </dependency>
 
                 <dependency>
@@ -2071,7 +2131,7 @@
                                         <include>org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec</include>
                                         <include>org.jboss.spec.javax.servlet.jsp:jboss-jsp-api_2.2_spec</include>
                                         <include>org.jboss.spec.javax.servlet.jstl:jboss-jstl-api_1.2_spec</include>
-                                        <include>org.jboss.spec.javax.transaction:jboss-transaction-api_1.1_spec</include>
+                                        <include>org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec</include>
                                         <include>org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.2_spec</include>
                                         <include>org.jboss.spec.javax.xml.rpc:jboss-jaxrpc-api_1.1_spec</include>
                                         <include>org.jboss.spec.javax.xml.soap:jboss-saaj-api_1.3_spec</include>
