@@ -22,8 +22,7 @@
 
 package org.jboss.as.ejb3.subsystem;
 
-import com.arjuna.ats.arjuna.common.CoreEnvironmentBean;
-import com.arjuna.ats.jbossatx.jta.RecoveryManagerService;
+import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanMBean;
 import org.jboss.as.clustering.registry.RegistryCollector;
 import org.jboss.as.clustering.registry.RegistryCollectorService;
 import org.jboss.as.connector.util.ConnectorServices;
@@ -128,6 +127,7 @@ import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceTarget;
 import org.jboss.remoting3.Endpoint;
+import org.jboss.tm.XAResourceRecoveryRegistry;
 import org.omg.PortableServer.POA;
 
 import javax.transaction.TransactionManager;
@@ -382,8 +382,8 @@ class EJB3SubsystemAdd extends AbstractBoottimeAddStepHandler {
 
         // add the EJB remote tx recovery service
         newControllers.add(serviceTarget.addService(EJBTransactionRecoveryService.SERVICE_NAME, EJBTransactionRecoveryService.INSTANCE)
-                .addDependency(ArjunaRecoveryManagerService.SERVICE_NAME, RecoveryManagerService.class, EJBTransactionRecoveryService.INSTANCE.getRecoveryManagerServiceInjector())
-                .addDependency(TxnServices.JBOSS_TXN_CORE_ENVIRONMENT, CoreEnvironmentBean.class, EJBTransactionRecoveryService.INSTANCE.getCoreEnvironmentBeanInjector())
+                .addDependency(ArjunaRecoveryManagerService.SERVICE_NAME, XAResourceRecoveryRegistry.class, EJBTransactionRecoveryService.INSTANCE.getRecoveryManagerServiceInjector())
+                .addDependency(TxnServices.JBOSS_TXN_CORE_ENVIRONMENT, CoreEnvironmentBeanMBean.class, EJBTransactionRecoveryService.INSTANCE.getCoreEnvironmentBeanInjector())
                 .install());
 
         if (!appclient) {

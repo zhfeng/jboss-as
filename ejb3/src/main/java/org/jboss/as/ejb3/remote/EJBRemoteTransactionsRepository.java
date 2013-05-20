@@ -22,14 +22,9 @@
 
 package org.jboss.as.ejb3.remote;
 
+import io.narayana.spi.arjuna.ArjunaUtils;
 import com.arjuna.ats.arjuna.common.Uid;
-import com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionImple;
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.SubordinateTransaction;
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.SubordinationManager;
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.TransactionImporter;
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.TransactionImporterImple;
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.XATerminatorImple;
-import com.arjuna.ats.jbossatx.jta.RecoveryManagerService;
+import io.narayana.spi.arjuna.SubordinateTransaction;
 import org.jboss.ejb.client.UserTransactionID;
 import org.jboss.ejb.client.XidTransactionID;
 import org.jboss.logging.Logger;
@@ -40,8 +35,8 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
+import org.jboss.tm.XAResourceRecoveryRegistry;
 
-import javax.resource.spi.XATerminator;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
@@ -49,12 +44,9 @@ import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.Xid;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Jaikiran Pai
@@ -69,13 +61,13 @@ public class EJBRemoteTransactionsRepository implements Service<EJBRemoteTransac
 
     private final InjectedValue<UserTransaction> userTransactionInjectedValue = new InjectedValue<UserTransaction>();
 
-    private final InjectedValue<RecoveryManagerService> recoveryManagerService = new InjectedValue<>();
+    private final InjectedValue<XAResourceRecoveryRegistry> recoveryManagerService = new InjectedValue<>();
 
     private final Map<UserTransactionID, Uid> userTransactions = Collections.synchronizedMap(new HashMap<UserTransactionID, Uid>());
 
     @Override
     public void start(StartContext context) throws StartException {
-        recoveryManagerService.getValue().addSerializableXAResourceDeserializer(EJBXAResourceDeserializer.INSTANCE);
+        ArjunaUtils.addSerializableXAResourceDeserializer(recoveryManagerService.getValue(), EJBXAResourceDeserializer.INSTANCE);
         logger.debug("Registered EJB XA resource deserializer " + EJBXAResourceDeserializer.INSTANCE);
     }
 
@@ -103,7 +95,7 @@ public class EJBRemoteTransactionsRepository implements Service<EJBRemoteTransac
         if (uid == null) {
             return null;
         }
-        return TransactionImple.getTransaction(uid);
+        return ArjunaUtils.getTransaction(uid);
     }
 
     /**
@@ -116,7 +108,7 @@ public class EJBRemoteTransactionsRepository implements Service<EJBRemoteTransac
         if (uid == null) {
             return null;
         }
-        return TransactionImple.getTransaction(uid);
+        return ArjunaUtils.getTransaction(uid);
     }
 
     /**
@@ -130,8 +122,10 @@ public class EJBRemoteTransactionsRepository implements Service<EJBRemoteTransac
     Transaction beginUserTransaction(final UserTransactionID userTransactionID) throws SystemException, NotSupportedException {
         this.getUserTransaction().begin();
         // get the tx that just got created and associated with the transaction manager
-        final TransactionImple newlyAssociatedTx = TransactionImple.getTransaction();
-        final Uid uid = newlyAssociatedTx.get_uid();
+        final Transaction  newlyAssociatedTx =  ArjunaUtils.getTransaction();
+        final Uid uid = ArjunaUtils.getUid(newlyAssociatedTx);
+//        final TransactionImple newlyAssociatedTx = ArjunaUtils.getTransaction();
+//        final Uid uid = newlyAssociatedTx.get_uid();
         this.userTransactions.put(userTransactionID, uid);
         return newlyAssociatedTx;
     }
@@ -145,9 +139,7 @@ public class EJBRemoteTransactionsRepository implements Service<EJBRemoteTransac
      * @throws XAException
      */
     public SubordinateTransaction getImportedTransaction(final XidTransactionID xidTransactionID) throws XAException {
-        final Xid xid = xidTransactionID.getXid();
-        final TransactionImporter transactionImporter = SubordinationManager.getTransactionImporter();
-        return transactionImporter.getImportedTransaction(xid);
+        return ArjunaUtils.getImportedTransaction(xidTransactionID.getXid());
     }
 
     /**
@@ -160,32 +152,11 @@ public class EJBRemoteTransactionsRepository implements Service<EJBRemoteTransac
      * @throws XAException
      */
     Transaction importTransaction(final XidTransactionID xidTransactionID, final int txTimeout) throws XAException {
-        final TransactionImporter transactionImporter = SubordinationManager.getTransactionImporter();
-        return transactionImporter.importTransaction(xidTransactionID.getXid(), txTimeout);
+        return ArjunaUtils.importTransaction(xidTransactionID.getXid(), txTimeout);
     }
 
     public Xid[] getXidsToRecoverForParentNode(final String parentNodeName, int recoveryFlags) throws XAException {
-        final Set<Xid> xidsToRecover = new HashSet<Xid>();
-        final TransactionImporter transactionImporter = SubordinationManager.getTransactionImporter();
-        if (transactionImporter instanceof TransactionImporterImple) {
-            final Set<Xid> inFlightXids = ((TransactionImporterImple) transactionImporter).getInflightXids(parentNodeName);
-            if (inFlightXids != null) {
-                xidsToRecover.addAll(inFlightXids);
-            }
-        }
-        final XATerminator xaTerminator = SubordinationManager.getXATerminator();
-        if (xaTerminator instanceof XATerminatorImple) {
-            final Xid[] inDoubtTransactions = ((XATerminatorImple) xaTerminator).doRecover(null, parentNodeName);
-            if (inDoubtTransactions != null) {
-                xidsToRecover.addAll(Arrays.asList(inDoubtTransactions));
-            }
-        } else {
-            final Xid[] inDoubtTransactions = xaTerminator.recover(recoveryFlags);
-            if (inDoubtTransactions != null) {
-                xidsToRecover.addAll(Arrays.asList(inDoubtTransactions));
-            }
-        }
-        return xidsToRecover.toArray(new Xid[0]);
+        return ArjunaUtils.getXidsToRecoverForParentNode(parentNodeName, recoveryFlags);
     }
 
     public UserTransaction getUserTransaction() {
@@ -200,7 +171,7 @@ public class EJBRemoteTransactionsRepository implements Service<EJBRemoteTransac
         return this.userTransactionInjectedValue;
     }
 
-    public Injector<RecoveryManagerService> getRecoveryManagerInjector() {
+    public Injector<XAResourceRecoveryRegistry> getRecoveryManagerInjector() {
         return this.recoveryManagerService;
     }
 

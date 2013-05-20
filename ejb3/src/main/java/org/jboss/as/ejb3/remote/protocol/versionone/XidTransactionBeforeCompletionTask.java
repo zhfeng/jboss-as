@@ -22,8 +22,8 @@
 
 package org.jboss.as.ejb3.remote.protocol.versionone;
 
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.SubordinateTransaction;
 import org.jboss.as.ejb3.EjbMessages;
+import io.narayana.spi.arjuna.SubordinateTransaction;
 import org.jboss.as.ejb3.remote.EJBRemoteTransactionsRepository;
 import org.jboss.ejb.client.XidTransactionID;
 import org.jboss.marshalling.MarshallerFactory;
@@ -49,7 +49,7 @@ class XidTransactionBeforeCompletionTask extends XidTransactionManagementTask {
         this.resumeTransaction(subordinateTransaction);
         try {
             // invoke the beforeCompletion
-            // Courtesy: com.arjuna.ats.internal.jta.transaction.arjunacore.jca.XATerminatorImple
+            // Courtesy: narayana.XATerminatorImple
             // do beforeCompletion()
             subordinateTransaction.doBeforeCompletion();
         } finally {

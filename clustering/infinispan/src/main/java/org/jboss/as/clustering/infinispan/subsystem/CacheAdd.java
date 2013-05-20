@@ -40,6 +40,7 @@ import java.util.Properties;
 import javax.transaction.TransactionManager;
 import javax.transaction.TransactionSynchronizationRegistry;
 
+import org.jboss.tm.XAResourceRecoveryRegistry;
 import org.infinispan.Cache;
 import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.CacheStoreConfigurationBuilder;
@@ -95,7 +96,6 @@ import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.value.InjectedValue;
 import org.jboss.msc.value.Value;
-import org.jboss.tm.XAResourceRecoveryRegistry;
 
 /**
  * Base class for cache add handlers

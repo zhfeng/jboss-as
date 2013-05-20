@@ -22,10 +22,11 @@
 
 package org.jboss.as.ejb3.remote.protocol.versionone;
 
-import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.SubordinateTransaction;
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.SubordinationManager;
+import io.narayana.spi.arjuna.ArjunaUtils;
+import io.narayana.spi.arjuna.SubordinateTransaction;
+
 import org.jboss.as.ejb3.EjbLogger;
+import io.narayana.spi.arjuna.TwoPhaseStatus;
 import org.jboss.as.ejb3.remote.EJBRemoteTransactionsRepository;
 import org.jboss.ejb.client.XidTransactionID;
 import org.jboss.marshalling.MarshallerFactory;
@@ -105,17 +106,18 @@ class XidTransactionPrepareTask extends XidTransactionManagementTask {
             // now "prepare"
             // Courtesy: com.arjuna.ats.internal.jta.transaction.arjunacore.jca.XATerminatorImple
             int result = subordinateTransaction.doPrepare();
-            switch (result) {
-                case TwoPhaseOutcome.PREPARE_READONLY:
+            TwoPhaseStatus status = ArjunaUtils.toStatus(result);
+
+            if (status.equals(TwoPhaseStatus.PREPARE_READONLY)) {
                     // TODO: Would it be fine to not remove the xid? (Need to understand how the subsequent
                     // flow works)
-                    SubordinationManager.getTransactionImporter().removeImportedTransaction(this.xidTransactionID.getXid());
+                    ArjunaUtils.removeImportedTransaction(this.xidTransactionID.getXid());
                     return XAResource.XA_RDONLY;
 
-                case TwoPhaseOutcome.PREPARE_OK:
+            } else if (status.equals(TwoPhaseStatus.PREPARE_OK)) {
                     return XAResource.XA_OK;
 
-                case TwoPhaseOutcome.PREPARE_NOTOK:
+            } else if (status.equals(TwoPhaseStatus.PREPARE_NOTOK)) {
                     // the JCA API spec limits what we can do in terms of reporting
                     // problems.
                     // try to use the exception code and cause to provide info
@@ -139,17 +141,17 @@ class XidTransactionPrepareTask extends XidTransactionManagementTask {
                         xaExceptionCode = XAException.XAER_RMERR;
                     }
                     // remove the transaction
-                    SubordinationManager.getTransactionImporter().removeImportedTransaction(this.xidTransactionID.getXid());
+                    ArjunaUtils.removeImportedTransaction(this.xidTransactionID.getXid());
                     final XAException xaException = new XAException(xaExceptionCode);
                     if (initCause != null) {
                         xaException.initCause(initCause);
                     }
                     throw xaException;
 
-                case TwoPhaseOutcome.INVALID_TRANSACTION:
+            } else if (status.equals(TwoPhaseStatus.INVALID_TRANSACTION)) {
                     throw new XAException(XAException.XAER_NOTA);
 
-                default:
+            } else {
                     throw new XAException(XAException.XA_RBOTHER);
             }
         } finally {

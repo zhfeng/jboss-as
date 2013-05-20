@@ -22,9 +22,9 @@
 
 package org.jboss.as.ejb3.remote.protocol.versionone;
 
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.SubordinateTransaction;
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.SubordinationManager;
+import io.narayana.spi.arjuna.ArjunaUtils;
 import org.jboss.as.ejb3.EjbLogger;
+import io.narayana.spi.arjuna.SubordinateTransaction;
 import org.jboss.as.ejb3.remote.EJBRemoteTransactionsRepository;
 import org.jboss.ejb.client.XidTransactionID;
 import org.jboss.marshalling.MarshallerFactory;
@@ -71,10 +71,10 @@ class XidTransactionCommitTask extends XidTransactionManagementTask {
         this.resumeTransaction(transaction);
         // now commit
         final Xid xid = this.xidTransactionID.getXid();
-        // Courtesy: com.arjuna.ats.internal.jta.transaction.arjunacore.jca.XATerminatorImple
+        // Courtesy: narayana.XATerminatorImple
         try {
             // get the subordinate tx
-            final SubordinateTransaction subordinateTransaction = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
+            final SubordinateTransaction subordinateTransaction = ArjunaUtils.getImportedTransaction(xid);
 
             if (subordinateTransaction == null) {
                 throw new XAException(XAException.XAER_INVAL);
@@ -87,14 +87,14 @@ class XidTransactionCommitTask extends XidTransactionManagementTask {
                     subordinateTransaction.doCommit();
                 }
                 // remove the tx
-                SubordinationManager.getTransactionImporter().removeImportedTransaction(xid);
+                ArjunaUtils.removeImportedTransaction(xid);
             } else {
                 throw new XAException(XAException.XA_RETRY);
             }
 
         } catch (RollbackException e) {
             // remove the tx
-            SubordinationManager.getTransactionImporter().removeImportedTransaction(xid);
+            ArjunaUtils.removeImportedTransaction(xid);
             final XAException xaException = new XAException(XAException.XA_RBROLLBACK);
             xaException.initCause(e);
             throw xaException;
@@ -103,7 +103,7 @@ class XidTransactionCommitTask extends XidTransactionManagementTask {
             // resource hasn't had a chance to recover yet
             if (ex.errorCode != XAException.XA_RETRY) {
                 // remove tx
-                SubordinationManager.getTransactionImporter().removeImportedTransaction(xid);
+                ArjunaUtils.removeImportedTransaction(xid);
             }
             throw ex;
 
@@ -124,7 +124,7 @@ class XidTransactionCommitTask extends XidTransactionManagementTask {
 
         } catch (final IllegalStateException ex) {
             // remove tx
-            SubordinationManager.getTransactionImporter().removeImportedTransaction(xid);
+            ArjunaUtils.removeImportedTransaction(xid);
 
             final XAException xaException = new XAException(XAException.XAER_NOTA);
             xaException.initCause(ex);
@@ -132,7 +132,7 @@ class XidTransactionCommitTask extends XidTransactionManagementTask {
 
         } catch (SystemException ex) {
             // remove tx
-            SubordinationManager.getTransactionImporter().removeImportedTransaction(xid);
+            ArjunaUtils.removeImportedTransaction(xid);
 
             final XAException xaException = new XAException(XAException.XAER_RMERR);
             xaException.initCause(ex);

@@ -22,6 +22,7 @@
 
 package org.jboss.as.jpa.service;
 
+import io.narayana.spi.usertx.UserTransactionRegistry;
 import org.jboss.as.jpa.container.JPAUserTransactionListener;
 import org.jboss.as.txn.service.UserTransactionRegistryService;
 import org.jboss.msc.inject.CastingInjector;
@@ -34,7 +35,6 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
-import org.jboss.tm.usertx.UserTransactionRegistry;
 
 /**
  * listen for user transaction begin events

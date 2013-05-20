@@ -26,7 +26,7 @@ import org.jboss.msc.service.Service;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
-import org.jboss.tm.JBossXATerminator;
+import io.narayana.spi.JBossXATerminator;
 
 /**
  * The XATerminator service.

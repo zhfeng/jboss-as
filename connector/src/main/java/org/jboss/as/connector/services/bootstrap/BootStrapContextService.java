@@ -24,6 +24,8 @@ package org.jboss.as.connector.services.bootstrap;
 
 import static org.jboss.as.connector.logging.ConnectorLogger.ROOT_LOGGER;
 
+import com.arjuna.ats.jbossatx.jta.TransactionManagerServiceMBean;
+import io.narayana.spi.JBossXATerminator;
 import org.jboss.as.connector.subsystems.jca.JcaSubsystemConfiguration;
 import org.jboss.as.connector.util.ConnectorServices;
 import org.jboss.jca.core.api.bootstrap.CloneableBootstrapContext;
@@ -35,7 +37,6 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.jboss.msc.value.Value;
-import org.jboss.tm.JBossXATerminator;
 
 /**
  * A DefaultBootStrapContextService Service
@@ -51,7 +52,7 @@ public final class BootStrapContextService implements Service<CloneableBootstrap
 
     private final InjectedValue<WorkManager> workManagerValue = new InjectedValue<WorkManager>();
 
-    private final InjectedValue<com.arjuna.ats.jbossatx.jta.TransactionManagerService> txManager = new InjectedValue<com.arjuna.ats.jbossatx.jta.TransactionManagerService>();
+    private final InjectedValue<TransactionManagerServiceMBean> txManager = new InjectedValue<TransactionManagerServiceMBean>();
 
     private final InjectedValue<JBossXATerminator> xaTerminator = new InjectedValue<JBossXATerminator>();
 
@@ -94,7 +95,7 @@ public final class BootStrapContextService implements Service<CloneableBootstrap
         jcaConfig.getValue().getBootstrapContexts().remove(name);
     }
 
-    public Injector<com.arjuna.ats.jbossatx.jta.TransactionManagerService> getTxManagerInjector() {
+    public Injector<TransactionManagerServiceMBean> getTxManagerInjector() {
         return txManager;
     }
 

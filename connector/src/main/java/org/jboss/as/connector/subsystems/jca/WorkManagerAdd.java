@@ -27,6 +27,7 @@ import static org.jboss.as.connector.subsystems.jca.Constants.WORKMANAGER_SHORT_
 import java.util.List;
 import java.util.concurrent.Executor;
 
+import io.narayana.spi.JBossXATerminator;
 import org.jboss.as.connector.services.workmanager.NamedWorkManager;
 import org.jboss.as.connector.services.workmanager.WorkManagerService;
 import org.jboss.as.connector.util.ConnectorServices;
@@ -41,7 +42,6 @@ import org.jboss.jca.core.api.workmanager.WorkManager;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceTarget;
-import org.jboss.tm.JBossXATerminator;
 
 /**
  * @author <a href="jesper.pedersen@jboss.org">Jesper Pedersen</a>

@@ -22,9 +22,9 @@
 
 package org.jboss.as.ejb3.remote.protocol.versionone;
 
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.SubordinateTransaction;
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.SubordinationManager;
+import io.narayana.spi.arjuna.ArjunaUtils;
 import org.jboss.as.ejb3.EjbLogger;
+import io.narayana.spi.arjuna.SubordinateTransaction;
 import org.jboss.as.ejb3.remote.EJBRemoteTransactionsRepository;
 import org.jboss.ejb.client.XidTransactionID;
 import org.jboss.marshalling.MarshallerFactory;
@@ -66,7 +66,7 @@ class XidTransactionForgetTask extends XidTransactionManagementTask {
         final Xid xid = this.xidTransactionID.getXid();
         try {
             // get the subordinate tx
-            final SubordinateTransaction subordinateTransaction = SubordinationManager.getTransactionImporter().getImportedTransaction(xid);
+            final SubordinateTransaction subordinateTransaction = ArjunaUtils.getImportedTransaction(xid);
 
             if (subordinateTransaction == null) {
                 throw new XAException(XAException.XAER_INVAL);
@@ -80,7 +80,7 @@ class XidTransactionForgetTask extends XidTransactionManagementTask {
             throw xaException;
 
         } finally {
-            SubordinationManager.getTransactionImporter().removeImportedTransaction(xid);
+            ArjunaUtils.removeImportedTransaction(xid);
             // disassociate the tx that was associated (resumed) on this thread.
             // This needs to be done explicitly because the SubOrdinationManager isn't responsible
             // for clearing the tx context from the thread

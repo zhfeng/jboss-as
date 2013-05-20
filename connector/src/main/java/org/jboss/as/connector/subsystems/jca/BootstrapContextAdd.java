@@ -25,6 +25,8 @@ import static org.jboss.as.connector.subsystems.jca.Constants.DEFAULT_NAME;
 
 import java.util.List;
 
+import com.arjuna.ats.jbossatx.jta.TransactionManagerServiceMBean;
+import io.narayana.spi.JBossXATerminator;
 import org.jboss.as.connector.services.bootstrap.BootStrapContextService;
 import org.jboss.as.connector.services.bootstrap.NamedBootstrapContext;
 import org.jboss.as.connector.util.ConnectorServices;
@@ -38,7 +40,6 @@ import org.jboss.jca.core.api.bootstrap.CloneableBootstrapContext;
 import org.jboss.jca.core.api.workmanager.WorkManager;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceTarget;
-import org.jboss.tm.JBossXATerminator;
 
 /**
  * @author <a href="jesper.pedersen@jboss.org">Jesper Pedersen</a>
@@ -74,7 +75,7 @@ public class BootstrapContextAdd extends AbstractAddStepHandler {
                         .addService(ConnectorServices.BOOTSTRAP_CONTEXT_SERVICE.append(name), bootCtxService)
                         .addDependency(ConnectorServices.WORKMANAGER_SERVICE.append(workmanager), WorkManager.class, bootCtxService.getWorkManagerValueInjector())
                         .addDependency(TxnServices.JBOSS_TXN_XA_TERMINATOR, JBossXATerminator.class, bootCtxService.getXaTerminatorInjector())
-                        .addDependency(TxnServices.JBOSS_TXN_ARJUNA_TRANSACTION_MANAGER, com.arjuna.ats.jbossatx.jta.TransactionManagerService.class, bootCtxService.getTxManagerInjector())
+                        .addDependency(TxnServices.JBOSS_TXN_ARJUNA_TRANSACTION_MANAGER, TransactionManagerServiceMBean.class, bootCtxService.getTxManagerInjector())
                         .addDependency(ConnectorServices.CONNECTOR_CONFIG_SERVICE, JcaSubsystemConfiguration.class, bootCtxService.getJcaConfigInjector())
                         .addListener(verificationHandler)
                         .setInitialMode(ServiceController.Mode.ACTIVE)

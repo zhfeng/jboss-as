@@ -38,7 +38,7 @@ import javax.transaction.TransactionSynchronizationRegistry;
 
 import org.jboss.as.jpa.container.EntityManagerUtil;
 import org.jboss.as.jpa.container.ExtendedEntityManager;
-import org.jboss.tm.TxUtils;
+import io.narayana.spi.arjuna.ArjunaUtils;
 
 /**
  * Transaction utilities for JPA
@@ -69,7 +69,7 @@ public class TransactionUtil {
 
     public static boolean isInTx() {
         Transaction tx = getTransaction();
-        if (tx == null || !TxUtils.isActive(tx))
+        if (tx == null || !ArjunaUtils.isActive(tx))
             return false;
         return true;
     }

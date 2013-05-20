@@ -22,7 +22,7 @@
 
 package org.jboss.as.ejb3.remote;
 
-import com.arjuna.ats.jta.recovery.SerializableXAResourceDeserializer;
+import io.narayana.spi.arjuna.SerializableXAResourceDeserializer;
 import org.jboss.ejb.client.EJBClientManagedTransactionContext;
 import org.jboss.logging.Logger;
 

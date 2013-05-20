@@ -26,6 +26,8 @@ import com.arjuna.ats.internal.arjuna.utils.UuidProcessId;
 import com.arjuna.ats.jbossatx.jta.RecoveryManagerService;
 import com.arjuna.ats.jta.common.JTAEnvironmentBean;
 import com.arjuna.ats.jts.common.jtsPropertyManager;
+import io.narayana.spi.arjuna.ProcessIdType;
+import io.narayana.spi.usertx.UserTransactionRegistry;
 import org.jboss.as.controller.AbstractBoottimeAddStepHandler;
 import org.jboss.as.controller.AttributeDefinition;
 import org.jboss.as.controller.OperationContext;
@@ -69,8 +71,7 @@ import org.jboss.msc.service.ServiceController.Mode;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.value.ImmediateValue;
-import org.jboss.tm.JBossXATerminator;
-import org.jboss.tm.usertx.UserTransactionRegistry;
+import io.narayana.spi.JBossXATerminator;
 import org.omg.CORBA.ORB;
 
 import javax.transaction.TransactionSynchronizationRegistry;

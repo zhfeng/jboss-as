@@ -28,8 +28,8 @@ import java.util.List;
 
 import javax.transaction.xa.XAResource;
 
-import com.arjuna.ats.arjuna.common.CoreEnvironmentBean;
-import com.arjuna.ats.jbossatx.jta.RecoveryManagerService;
+import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanMBean;
+import org.jboss.tm.XAResourceRecoveryRegistry;
 import org.jboss.ejb.client.EJBClientContext;
 import org.jboss.ejb.client.EJBClientContextListener;
 import org.jboss.ejb.client.EJBClientManagedTransactionContext;
@@ -58,8 +58,8 @@ public class EJBTransactionRecoveryService implements Service<EJBTransactionReco
 
 
     private final List<EJBReceiverContext> receiverContexts = Collections.synchronizedList(new ArrayList<EJBReceiverContext>());
-    private final InjectedValue<RecoveryManagerService> recoveryManagerService = new InjectedValue<RecoveryManagerService>();
-    private final InjectedValue<CoreEnvironmentBean> arjunaTxCoreEnvironmentBean = new InjectedValue<CoreEnvironmentBean>();
+    private final InjectedValue<XAResourceRecoveryRegistry> recoveryManagerService = new InjectedValue<XAResourceRecoveryRegistry>();
+    private final InjectedValue<CoreEnvironmentBeanMBean> arjunaTxCoreEnvironmentBean = new InjectedValue<CoreEnvironmentBeanMBean>();
 
     private EJBTransactionRecoveryService() {
     }
@@ -110,11 +110,11 @@ public class EJBTransactionRecoveryService implements Service<EJBTransactionReco
         this.receiverContexts.remove(receiverContext);
     }
 
-    public Injector<RecoveryManagerService> getRecoveryManagerServiceInjector() {
+    public Injector<XAResourceRecoveryRegistry> getRecoveryManagerServiceInjector() {
         return this.recoveryManagerService;
     }
 
-    public Injector<CoreEnvironmentBean> getCoreEnvironmentBeanInjector() {
+    public Injector<CoreEnvironmentBeanMBean> getCoreEnvironmentBeanInjector() {
         return this.arjunaTxCoreEnvironmentBean;
     }
 

@@ -30,7 +30,7 @@ import javax.transaction.TransactionManager;
 import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.UserTransaction;
 
-import com.arjuna.ats.jbossatx.jta.RecoveryManagerService;
+import org.jboss.tm.XAResourceRecoveryRegistry;
 import org.jboss.as.clustering.registry.RegistryCollector;
 import org.jboss.as.controller.AbstractBoottimeAddStepHandler;
 import org.jboss.as.controller.OperationContext;
@@ -87,7 +87,7 @@ public class EJB3RemoteServiceAdd extends AbstractBoottimeAddStepHandler {
         final ServiceController transactionRepositoryServiceController = serviceTarget.addService(EJBRemoteTransactionsRepository.SERVICE_NAME, transactionsRepository)
                 .addDependency(TransactionManagerService.SERVICE_NAME, TransactionManager.class, transactionsRepository.getTransactionManagerInjector())
                 .addDependency(UserTransactionService.SERVICE_NAME, UserTransaction.class, transactionsRepository.getUserTransactionInjector())
-                .addDependency(TxnServices.JBOSS_TXN_ARJUNA_RECOVERY_MANAGER, RecoveryManagerService.class, transactionsRepository.getRecoveryManagerInjector())
+                .addDependency(TxnServices.JBOSS_TXN_ARJUNA_RECOVERY_MANAGER, XAResourceRecoveryRegistry.class, transactionsRepository.getRecoveryManagerInjector())
                 .setInitialMode(ServiceController.Mode.ACTIVE)
                 .install();
         newControllers.add(transactionRepositoryServiceController);

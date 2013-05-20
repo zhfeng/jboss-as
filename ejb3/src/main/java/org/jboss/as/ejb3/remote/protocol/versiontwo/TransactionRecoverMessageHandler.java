@@ -30,9 +30,9 @@ import java.util.concurrent.ExecutorService;
 
 import javax.transaction.xa.Xid;
 
-import com.arjuna.ats.jta.utils.XAHelper;
 import org.jboss.as.ejb3.EjbLogger;
 import org.jboss.as.ejb3.EjbMessages;
+import io.narayana.spi.arjuna.ArjunaUtils;
 import org.jboss.as.ejb3.remote.EJBRemoteTransactionsRepository;
 import org.jboss.as.ejb3.remote.protocol.AbstractMessageHandler;
 import org.jboss.as.ejb3.remote.protocol.versionone.ChannelAssociation;
@@ -112,7 +112,7 @@ class TransactionRecoverMessageHandler extends AbstractMessageHandler {
                 if (logger.isTraceEnabled()) {
                     logger.trace("Returning " + xidsToRecover.length + " Xid(s) to recover for parent node: " + txParentNodeName);
                     for (final Xid xid : xidsToRecover) {
-                        logger.trace("EJB Xid to recover " + XAHelper.xidToString(xid));
+                        logger.trace("EJB Xid to recover " + ArjunaUtils.xidToString(xid));
                     }
                 }
                 // write out invocation success message to the channel

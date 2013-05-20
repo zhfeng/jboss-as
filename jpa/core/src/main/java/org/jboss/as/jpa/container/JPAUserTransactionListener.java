@@ -22,6 +22,8 @@
 
 package org.jboss.as.jpa.container;
 
+import io.narayana.spi.usertx.UserTransactionListener;
+
 import java.util.Map;
 
 import javax.transaction.SystemException;
@@ -39,7 +41,7 @@ import javax.transaction.SystemException;
  *
  * @author Scott Marlow
  */
-public class JPAUserTransactionListener implements org.jboss.tm.usertx.UserTransactionListener {
+public class JPAUserTransactionListener implements UserTransactionListener {
 
     @Override
     public void userTransactionStarted() throws SystemException {

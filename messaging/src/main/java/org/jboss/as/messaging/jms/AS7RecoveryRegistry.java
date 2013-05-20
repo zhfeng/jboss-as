@@ -22,11 +22,11 @@
 package org.jboss.as.messaging.jms;
 
 
+import org.jboss.tm.XAResourceRecoveryRegistry;
 import org.hornetq.jms.server.recovery.HornetQRegistryBase;
 import org.jboss.as.txn.service.TxnServices;
 import org.jboss.msc.service.ServiceContainer;
 import org.jboss.msc.service.ServiceController;
-import org.jboss.tm.XAResourceRecoveryRegistry;
 
 /**
  * @author <a href="mailto:andy.taylor@jboss.org">Andy Taylor</a>

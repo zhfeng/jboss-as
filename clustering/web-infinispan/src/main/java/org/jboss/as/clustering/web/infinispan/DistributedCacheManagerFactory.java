@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+import org.jboss.tm.XAResourceRecoveryRegistry;
 import org.infinispan.AdvancedCache;
 import org.infinispan.Cache;
 import org.infinispan.configuration.cache.Configuration;
@@ -63,7 +64,6 @@ import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistry;
 import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.value.InjectedValue;
-import org.jboss.tm.XAResourceRecoveryRegistry;
 
 /**
  * Factory for creating an Infinispan-backed distributed cache manager.

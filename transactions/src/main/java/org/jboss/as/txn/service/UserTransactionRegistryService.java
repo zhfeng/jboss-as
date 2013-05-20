@@ -22,12 +22,12 @@
 
 package org.jboss.as.txn.service;
 
+import io.narayana.spi.usertx.UserTransactionRegistry;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
-import org.jboss.tm.usertx.UserTransactionRegistry;
 
 /**
  * Service responsible for exposing a {@link UserTransactionRegistry} instance.

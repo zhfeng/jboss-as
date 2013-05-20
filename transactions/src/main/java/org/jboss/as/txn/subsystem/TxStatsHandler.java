@@ -26,7 +26,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.arjuna.ats.arjuna.coordinator.TxStats;
+import com.arjuna.ats.arjuna.coordinator.TxStatsMBean;
 import org.jboss.as.controller.AbstractRuntimeOnlyHandler;
 import org.jboss.as.controller.AttributeDefinition;
 import org.jboss.as.controller.OperationContext;
@@ -36,6 +36,7 @@ import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
+import io.narayana.spi.arjuna.ArjunaUtils;
 
 import static org.jboss.as.txn.TransactionMessages.MESSAGES;
 
@@ -81,7 +82,7 @@ public class TxStatsHandler extends AbstractRuntimeOnlyHandler {
 
     public static final TxStatsHandler INSTANCE = new  TxStatsHandler();
 
-    private final TxStats txStats = TxStats.getInstance();
+    private final TxStatsMBean txStats = ArjunaUtils.getTxStats();
 
     private TxStatsHandler() {
     }

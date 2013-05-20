@@ -22,19 +22,17 @@
 
 package org.jboss.as.ejb3.remote.protocol.versionone;
 
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.SubordinateTransaction;
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.SubordinationManager;
-import com.arjuna.ats.internal.jta.transaction.arjunacore.jca.XATerminatorImple;
+import io.narayana.spi.arjuna.ArjunaUtils;
+
 import org.jboss.as.ejb3.EjbLogger;
+import io.narayana.spi.arjuna.SubordinateTransaction;
 import org.jboss.as.ejb3.remote.EJBRemoteTransactionsRepository;
 import org.jboss.ejb.client.XidTransactionID;
 import org.jboss.marshalling.MarshallerFactory;
 import org.xnio.IoUtils;
 
-import javax.resource.spi.XATerminator;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-import javax.transaction.xa.XAResource;
 import java.io.IOException;
 
 
@@ -98,17 +96,10 @@ abstract class XidTransactionManagementTask implements Runnable {
     }
 
     protected SubordinateTransaction tryRecoveryForImportedTransaction() throws Exception {
-        final XATerminator xaTerminator = SubordinationManager.getXATerminator();
-        if (xaTerminator instanceof XATerminatorImple) {
-            EjbLogger.ROOT_LOGGER.debug("Trying to recover an imported transaction for Xid " + this.xidTransactionID.getXid());
-            // We intentionally pass null for Xid since passing the specific Xid doesn't seem to work for some reason.
-            // As for null for parentNodeName, we do that intentionally since we aren't aware of the parent node on which
-            // the transaction originated
-            ((XATerminatorImple) xaTerminator).doRecover(null, null);
-        } else {
-            xaTerminator.recover(XAResource.TMSTARTRSCAN);
-        }
+        EjbLogger.ROOT_LOGGER.debug("Trying to recover an imported transaction for Xid " + this.xidTransactionID.getXid());
+        ArjunaUtils.doRecovery(ArjunaUtils.getXATerminator());
+
         // now that recovery has been completed via the XATerminator, it's possible that the subordinate tx will have been loaded
-        return SubordinationManager.getTransactionImporter().getImportedTransaction(this.xidTransactionID.getXid());
+        return ArjunaUtils.getImportedTransaction(this.xidTransactionID.getXid());
     }
 }

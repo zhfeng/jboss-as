@@ -26,6 +26,7 @@ import static org.jboss.as.connector.logging.ConnectorLogger.ROOT_LOGGER;
 
 import java.util.concurrent.Executor;
 
+import io.narayana.spi.JBossXATerminator;
 import org.jboss.as.connector.util.ConnectorServices;
 import org.jboss.jca.core.api.workmanager.WorkManager;
 import org.jboss.jca.core.security.DefaultCallback;
@@ -38,7 +39,6 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.jboss.threads.BlockingExecutor;
-import org.jboss.tm.JBossXATerminator;
 import org.wildfly.security.manager.WildFlySecurityManager;
 
 /**
