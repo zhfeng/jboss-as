@@ -41,35 +41,28 @@ import java.lang.reflect.Constructor;
 public class CDIExtensionProcessor implements DeploymentUnitProcessor {
 
     private static final String[] EMPTY_STRING_ARRAY = {};
-    private static final String[] EXTENSIONS = {"org.jboss.narayana.txframework.impl.as.TXFrameworkCDIExtension"};
 
     public void deploy(DeploymentPhaseContext phaseContext) throws DeploymentUnitProcessingException {
+
         final DeploymentUnit unit = phaseContext.getDeploymentUnit();
 
-        if (!XTSDeploymentMarker.isXTSAnnotationDeployment(unit)) {
-            return;
-        }
-
-        final DeploymentReflectionIndex index = unit.getAttachment(Attachments.REFLECTION_INDEX);
-        final ClassLoader cl = unit.getAttachment(Attachments.MODULE).getClassLoader();
-        for (String fqn : EXTENSIONS) {
-            final Extension extension = loadExtension(fqn, index, cl);
+        try {
+            final DeploymentReflectionIndex index = unit.getAttachment(Attachments.REFLECTION_INDEX);
+            final ClassLoader cl = unit.getAttachment(Attachments.MODULE).getClassLoader();
+            final Class<Extension> serviceClass = (Class<Extension>) cl.loadClass("org.jboss.narayana.txframework.impl.as.TXFrameworkCDIExtension");
+            final Constructor<Extension> ctor = index.getClassIndex(serviceClass).getConstructor(EMPTY_STRING_ARRAY);
+            final Extension extension =  ctor.newInstance();
             final Metadata<Extension> metadata = new MetadataImpl<Extension>(extension, unit.getName());
             unit.addToAttachmentList(WeldAttachments.PORTABLE_EXTENSIONS, metadata);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private Extension loadExtension(final String serviceClassName, final DeploymentReflectionIndex index, final ClassLoader loader) throws DeploymentUnitProcessingException {
-        try {
-            final Class<Extension> serviceClass = (Class<Extension>) loader.loadClass(serviceClassName);
-            final Constructor<Extension> ctor = index.getClassIndex(serviceClass).getConstructor(EMPTY_STRING_ARRAY);
-            return ctor.newInstance();
+        } catch (ClassNotFoundException e) {
+            //Temporary hack as this class will disappear when WFLY-1370 is resolved.
+            System.err.println("CDI Extension not in classpath for: " + unit.getName());
         } catch (Exception e) {
             throw XtsAsMessages.MESSAGES.cannotLoadCDIExtension();
         }
     }
 
     public void undeploy(DeploymentUnit context) {
+
     }
 }
