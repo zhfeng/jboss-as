@@ -44,7 +44,6 @@ import org.jboss.as.controller.parsing.ExtensionParsingContext;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 import org.jboss.as.controller.services.path.ResolvePathHandler;
 import org.jboss.as.controller.transform.TransformationContext;
-import org.jboss.as.controller.transform.description.AttributeConverter;
 import org.jboss.as.controller.transform.description.DiscardAttributeChecker;
 import org.jboss.as.controller.transform.description.RejectAttributeChecker;
 import org.jboss.as.controller.transform.description.ResourceTransformationDescriptionBuilder;
@@ -168,34 +167,29 @@ public class TransactionExtension implements Extension {
     private static void registerTransformers(final SubsystemRegistration subsystem) {
 
         final ResourceTransformationDescriptionBuilder subsystemRoot = TransformationDescriptionBuilder.Factory.createSubsystemInstance();
+        final ResourceTransformationDescriptionBuilder subsystemRoot120 = TransformationDescriptionBuilder.Factory.createSubsystemInstance();
 
         //Versions < 1.3.0 assume 'true' for the hornetq-store-enable-async-io attribute (in which case it will look for the native libs
         //and enable async io if found. The default value if not defined is 'false' though. This should only be rejected if use-hornetq-store is not false.
-        subsystemRoot.getAttributeBuilder()
+        subsystemRoot120.getAttributeBuilder()
+                .setDiscard(new DiscardAttributeChecker.DiscardAttributeValueChecker(false, false, new ModelNode(false)),
+                        TransactionSubsystemRootResourceDefinition.PROCESS_ID_UUID)
                 .setDiscard(new DiscardAttributeChecker.DiscardAttributeValueChecker(false, false, new ModelNode(true)),
                         TransactionSubsystemRootResourceDefinition.HORNETQ_STORE_ENABLE_ASYNC_IO)
                 .addRejectCheck(RejectHornetQStoreAsyncIOChecker.INSTANCE, TransactionSubsystemRootResourceDefinition.HORNETQ_STORE_ENABLE_ASYNC_IO);
 
         final ModelVersion version120 = ModelVersion.create(1, 2, 0);
-        final TransformationDescription description120 = subsystemRoot.build();
+        final TransformationDescription description120 = subsystemRoot120.build();
         TransformationDescription.Tools.register(description120, subsystem, version120);
 
         subsystemRoot.getAttributeBuilder()
-                .setDiscard(UnneededJDBCStoreChecker.INSTANCE, TransactionSubsystemRootResourceDefinition.attributes_1_2)
-                .addRejectCheck(RejectAttributeChecker.DEFINED, TransactionSubsystemRootResourceDefinition.attributes_1_2)
-                .setValueConverter(new AttributeConverter() {
-                    @Override
-                    public void convertOperationParameter(PathAddress address, String attributeName, ModelNode attributeValue, ModelNode operation, TransformationContext context) {
-                        // nothing here
-                    }
+            .setDiscard(new DiscardAttributeChecker.DiscardAttributeValueChecker(false, false, new ModelNode(true)),
+                    TransactionSubsystemRootResourceDefinition.HORNETQ_STORE_ENABLE_ASYNC_IO)
+            .addRejectCheck(RejectHornetQStoreAsyncIOChecker.INSTANCE, TransactionSubsystemRootResourceDefinition.HORNETQ_STORE_ENABLE_ASYNC_IO);
 
-                    @Override
-                    public void convertResourceAttribute(PathAddress address, String attributeName, ModelNode attributeValue, TransformationContext context) {
-                        if (!attributeValue.isDefined()) {
-                            attributeValue.set(false);
-                        }
-                    }
-                }, TransactionSubsystemRootResourceDefinition.PROCESS_ID_UUID);
+        subsystemRoot.getAttributeBuilder()
+                .setDiscard(UnneededJDBCStoreChecker.INSTANCE, TransactionSubsystemRootResourceDefinition.attributes_1_2)
+                .addRejectCheck(RejectAttributeChecker.DEFINED, TransactionSubsystemRootResourceDefinition.attributes_1_2);
 
         // Transformations to the 1.1.1 Model:
         // 1) Remove JDBC store attributes if not used
