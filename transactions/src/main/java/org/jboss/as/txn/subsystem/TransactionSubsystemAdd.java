@@ -29,6 +29,7 @@ import static org.jboss.as.txn.subsystem.CommonAttributes.USE_JDBC_STORE;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.transaction.TransactionManager;
 import javax.transaction.TransactionSynchronizationRegistry;
@@ -196,7 +197,7 @@ class TransactionSubsystemAdd extends AbstractBoottimeAddStepHandler {
     @Override
     protected void performBoottime(OperationContext context, ModelNode operation, ModelNode model) throws OperationFailedException {
 
-        checkIfNodeIdentifierIsDefault(context, model);
+        checkIfNodeIdentifierIsDefault(operation, model);
 
         boolean jts = model.hasDefined(JTS) && model.get(JTS).asBoolean();
 
@@ -451,12 +452,12 @@ class TransactionSubsystemAdd extends AbstractBoottimeAddStepHandler {
                 .install();
     }
 
-    private void checkIfNodeIdentifierIsDefault(final OperationContext context, final ModelNode model) throws OperationFailedException {
-        final String nodeIdentifier = TransactionSubsystemRootResourceDefinition.NODE_IDENTIFIER.resolveModelAttribute(context, model).asString();
-        final String defaultNodeIdentifier = TransactionSubsystemRootResourceDefinition.NODE_IDENTIFIER.getDefaultValue().asString();
-
-        if (defaultNodeIdentifier.equals(nodeIdentifier)) {
+    private void checkIfNodeIdentifierIsDefault(final ModelNode operation, final ModelNode model) throws OperationFailedException {
+        ModelNode node = model.get(TransactionSubsystemRootResourceDefinition.NODE_IDENTIFIER.getName());
+        if (!node.isDefined()) {
             TransactionLogger.ROOT_LOGGER.nodeIdentifierIsSetToDefault();
+            UUID uuid  =  UUID.randomUUID();
+            node.set(new ModelNode().set(uuid.toString().substring(0, 23)));
         }
     }
 
