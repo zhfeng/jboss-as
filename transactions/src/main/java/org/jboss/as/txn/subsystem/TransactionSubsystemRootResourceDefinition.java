@@ -148,12 +148,10 @@ public class TransactionSubsystemRootResourceDefinition extends SimpleResourceDe
 
     //object store
     public static final SimpleAttributeDefinition OBJECT_STORE_RELATIVE_TO = new SimpleAttributeDefinitionBuilder(CommonAttributes.OBJECT_STORE_RELATIVE_TO, ModelType.STRING, true)
-            .setDefaultValue(new ModelNode().set("jboss.server.data.dir"))
             .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
             .setXmlName(Attribute.RELATIVE_TO.getLocalName())
             .setAllowExpression(true).build();
     public static final SimpleAttributeDefinition OBJECT_STORE_PATH = new SimpleAttributeDefinitionBuilder(CommonAttributes.OBJECT_STORE_PATH, ModelType.STRING, true)
-            .setDefaultValue(new ModelNode().set("tx-object-store"))
             .setFlags(AttributeAccess.Flag.RESTART_ALL_SERVICES)
             .setXmlName(Attribute.PATH.getLocalName())
             .setAllowExpression(true).build();
