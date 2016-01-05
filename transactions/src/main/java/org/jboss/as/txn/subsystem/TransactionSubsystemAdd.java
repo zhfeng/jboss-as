@@ -27,8 +27,6 @@ import static org.jboss.as.txn.subsystem.CommonAttributes.JDBC_STORE_DATASOURCE;
 import static org.jboss.as.txn.subsystem.CommonAttributes.JTS;
 import static org.jboss.as.txn.subsystem.CommonAttributes.USE_JOURNAL_STORE;
 import static org.jboss.as.txn.subsystem.CommonAttributes.USE_JDBC_STORE;
-import static org.jboss.as.txn.subsystem.CommonAttributes.OBJECT_STORE_RELATIVE_TO;
-import static org.jboss.as.txn.subsystem.CommonAttributes.OBJECT_STORE_PATH;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -138,6 +136,14 @@ class TransactionSubsystemAdd extends AbstractBoottimeAddStepHandler {
 
         TransactionSubsystemRootResourceDefinition.OBJECT_STORE_RELATIVE_TO.validateAndSet(operation, objectStoreModel);
         TransactionSubsystemRootResourceDefinition.OBJECT_STORE_PATH.validateAndSet(operation, objectStoreModel);
+
+        ModelNode relativeVal = objectStoreModel.get(TransactionSubsystemRootResourceDefinition.OBJECT_STORE_RELATIVE_TO.getName());
+        ModelNode pathVal =  objectStoreModel.get(TransactionSubsystemRootResourceDefinition.OBJECT_STORE_PATH.getName());
+
+        if (!relativeVal.isDefined() &&
+                (!pathVal.isDefined() || pathVal.asString().equals(TransactionSubsystemRootResourceDefinition.OBJECT_STORE_PATH.getDefaultValue().asString()))) {
+            relativeVal.set(new ModelNode().set("jboss.server.data.dir"));
+        }
 
     }
 
@@ -320,11 +326,9 @@ class TransactionSubsystemAdd extends AbstractBoottimeAddStepHandler {
     private void performObjectStoreBoottime(OperationContext context, ModelNode model) throws OperationFailedException {
         boolean useJournalStore = model.hasDefined(USE_JOURNAL_STORE) && model.get(USE_JOURNAL_STORE).asBoolean();
         final boolean enableAsyncIO = TransactionSubsystemRootResourceDefinition.JOURNAL_STORE_ENABLE_ASYNC_IO.resolveModelAttribute(context, model).asBoolean();
-        final String objectStorePathRef = model.hasDefined(OBJECT_STORE_RELATIVE_TO) ? model.get(OBJECT_STORE_RELATIVE_TO).asString() :
-                model.hasDefined(OBJECT_STORE_PATH) ? null : model.get(OBJECT_STORE_RELATIVE_TO).set("jboss.server.data.dir").asString();
-        final String objectStorePath = model.hasDefined(OBJECT_STORE_PATH) ? model.get(OBJECT_STORE_PATH).asString() :
-                model.get(OBJECT_STORE_PATH).set("tx-object-store").asString();
-
+        final String objectStorePathRef = TransactionSubsystemRootResourceDefinition.OBJECT_STORE_RELATIVE_TO.resolveModelAttribute(context, model).isDefined() ?
+                TransactionSubsystemRootResourceDefinition.OBJECT_STORE_RELATIVE_TO.resolveModelAttribute(context, model).asString(): null;
+        final String objectStorePath = TransactionSubsystemRootResourceDefinition.OBJECT_STORE_PATH.resolveModelAttribute(context, model).asString();
         final boolean useJdbcStore = model.hasDefined(USE_JDBC_STORE) && model.get(USE_JDBC_STORE).asBoolean();
         final String dataSourceJndiName = TransactionSubsystemRootResourceDefinition.JDBC_STORE_DATASOURCE.resolveModelAttribute(context, model).asString();
 
