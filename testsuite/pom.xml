@@ -1241,6 +1241,7 @@
                     --add-opens=java.base/sun.security.validator=ALL-UNNAMED
                     --add-opens=java.management/javax.management.remote=ALL-UNNAMED
                     --add-opens=java.base/java.lang=ALL-UNNAMED
+                    --add-modules=java.corba
                 </modular.jdk.testsuite.args>
             </properties>
         </profile>
